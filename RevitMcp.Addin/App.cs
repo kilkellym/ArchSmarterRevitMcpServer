@@ -1,42 +1,44 @@
-namespace RevitMcp.Addin
+#nullable enable
+using RevitMcp.Addin.Bridge;
+using RevitMcp.Core.Handlers;
+
+namespace RevitMcp.Addin;
+
+/// <summary>
+/// Revit external application entry point.
+/// Wires up the MCP bridge pipeline on startup and tears it down on shutdown.
+/// </summary>
+internal class App : IExternalApplication
 {
-    internal class App : IExternalApplication
+    private PipeServer? _pipeServer;
+
+    public Result OnStartup(UIControlledApplication app)
     {
-        public Result OnStartup(UIControlledApplication app)
+        // 1. Build the handler registry with all known command handlers.
+        var registry = new HandlerRegistry(new ICommandHandler[]
         {
-            //// 1. Create ribbon tab
-            //string tabName = "My Custom Revit Add-in";
-            //try
-            //{
-            //    app.CreateRibbonTab(tabName);
-            //}
-            //catch (Exception)
-            //{
-            //    Debug.Print("Tab already exists.");
-            //}
+            new GetElementsHandler()
+        });
 
-            //// 2. Create ribbon panel 
-            //RibbonPanel panel = Common.Utils.CreateRibbonPanel(app, tabName, "Revit Tools");
+        // 2. Create the channel that bridges the pipe thread → Revit main thread.
+        var channel = new RequestChannel();
 
-            //// 3. Create button data instances
-            //PushButtonData btnData1 = Command1.GetButtonData();
-            //PushButtonData btnData2 = Command2.GetButtonData();
+        // 3. Create the external-event handler that drains the channel on Revit's main thread.
+        var executor = new ExternalEventExecutor(channel, registry);
+        var externalEvent = ExternalEvent.Create(executor);
 
-            //// 4. Create buttons
-            //PushButton myButton1 = panel.AddItem(btnData1) as PushButton;
-            //PushButton myButton2 = panel.AddItem(btnData2) as PushButton;
+        // 4. Start the named-pipe server on a background thread.
+        _pipeServer = new PipeServer(channel, externalEvent);
+        _pipeServer.Start();
 
-            // NOTE:
-            // To create a new tool, copy lines 35 and 39 and rename the variables to "btnData3" and "myButton3". 
-            // Change the name of the tool in the arguments of line 
-
-            return Result.Succeeded;
-        }
-
-        public Result OnShutdown(UIControlledApplication a)
-        {
-            return Result.Succeeded;
-        }
+        return Result.Succeeded;
     }
 
+    public Result OnShutdown(UIControlledApplication a)
+    {
+        _pipeServer?.Dispose();
+        _pipeServer = null;
+
+        return Result.Succeeded;
+    }
 }
