@@ -30,7 +30,7 @@ public sealed class RevitBridgeClient : IAsyncDisposable
     /// <param name="cancellationToken">Cancellation token.</param>
     public async Task ConnectAsync(CancellationToken cancellationToken = default)
     {
-        await _pipe.ConnectAsync(cancellationToken);
+        await _pipe.ConnectAsync(10_000, cancellationToken);
     }
 
     /// <summary>
