@@ -25,4 +25,19 @@ public static class CommandNames
     /// Gets detailed information about a single Revit element by its ID.
     /// </summary>
     public const string GetElementById = "get_element_by_id";
+
+    /// <summary>
+    /// Analyzes the overall complexity and composition of the active Revit model.
+    /// </summary>
+    public const string AnalyzeModelStatistics = "analyze_model_statistics";
+
+    /// <summary>
+    /// Gets information about the currently active view in Revit.
+    /// </summary>
+    public const string GetCurrentViewInfo = "get_current_view_info";
+
+    /// <summary>
+    /// Extracts all rooms from the active Revit model with detailed spatial data.
+    /// </summary>
+    public const string ExportRoomData = "export_room_data";
 }
