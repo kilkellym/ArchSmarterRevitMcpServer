@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Autodesk.Revit.DB;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -21,7 +22,7 @@ public sealed class GetElementsHandler : ICommandHandler
     public string Command => CommandNames.GetElements;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request)
+    public BridgeResponse Handle(BridgeRequest request, Document doc)
     {
         try
         {
@@ -33,30 +34,49 @@ public sealed class GetElementsHandler : ICommandHandler
                 ? limitProp.GetInt32()
                 : 100;
 
-            // TODO: Replace with actual Revit API calls once the Revit API package is referenced.
-            // Implementation will use:
-            //   var doc = commandData.Application.ActiveUIDocument.Document;
-            //   using var collector = new FilteredElementCollector(doc);
-            //   if (category != null)
-            //       collector.OfCategory(ParseCategory(category));
-            //   var elements = collector
-            //       .WhereElementIsNotElementType()
-            //       .Take(limit)
-            //       .Select(e => new { Id = e.Id.Value, Name = SafeGetName(e), Category = e.Category?.Name })
-            //       .ToList();
+            using var collector = new FilteredElementCollector(doc);
+            collector.WhereElementIsNotElementType();
 
-            var placeholder = JsonSerializer.SerializeToElement(new
+            if (category is not null)
             {
-                message = "Handler registered. Revit API integration pending.",
-                requestedCategory = category,
-                limit
-            });
+                if (!Enum.TryParse<BuiltInCategory>($"OST_{category}", out var bic))
+                    return new BridgeResponse(Success: false, Error: $"Unknown category: {category}");
 
-            return new BridgeResponse(Success: true, Data: placeholder);
+                collector.OfCategory(bic);
+            }
+
+            var elements = collector
+                .Take(limit)
+                .Select(e => new
+                {
+                    Id = e.Id.Value,
+                    Name = SafeGetName(e),
+                    Category = e.Category?.Name
+                })
+                .ToList();
+
+            var data = JsonSerializer.SerializeToElement(elements);
+            return new BridgeResponse(Success: true, Data: data);
         }
         catch (Exception ex)
         {
             return new BridgeResponse(Success: false, Error: ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Safely reads <see cref="Element.Name"/>. Some element types throw when
+    /// the Name property is accessed.
+    /// </summary>
+    private static string? SafeGetName(Element element)
+    {
+        try
+        {
+            return element.Name;
+        }
+        catch
+        {
+            return null;
         }
     }
 }

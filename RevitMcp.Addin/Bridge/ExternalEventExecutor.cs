@@ -34,13 +34,24 @@ internal sealed class ExternalEventExecutor : IExternalEventHandler
     /// </summary>
     public void Execute(UIApplication app)
     {
+        var doc = app.ActiveUIDocument?.Document;
+        if (doc is null)
+        {
+            while (_channel.Reader.TryRead(out var dropped))
+            {
+                dropped.Completion.TrySetResult(
+                    new BridgeResponse(Success: false, Error: "No active Revit document."));
+            }
+            return;
+        }
+
         while (_channel.Reader.TryRead(out var pending))
         {
             try
             {
                 if (_registry.TryGetHandler(pending.Request.Command, out var handler) && handler is not null)
                 {
-                    var response = handler.Handle(pending.Request);
+                    var response = handler.Handle(pending.Request, doc);
                     pending.Completion.TrySetResult(response);
                 }
                 else
