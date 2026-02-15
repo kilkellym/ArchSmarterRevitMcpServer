@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
   <AddIn Type="Command">
-    <Text>RevitMcp.Addin - Command 1</Text>
+    <Text>ArchSmarter Revit Mcp.Addin - Command 1</Text>
     <Description>Some description</Description>
     <Assembly>RevitMcp.Addin\RevitMcp.Addin.dll</Assembly>
     <FullClassName>RevitMcp.Addin.Command1</FullClassName>

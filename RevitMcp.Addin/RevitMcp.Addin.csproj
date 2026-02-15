@@ -93,13 +93,12 @@
 	</ItemGroup>
 	
 	<PropertyGroup>
-		<PostBuildEvent>
-      echo *** Configuration: $(Configuration)
-      echo *** Copying results to $(RevitVersion)
-      echo *** $(MSBuildProjectDirectory)
-      if not exist "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin" mkdir "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
-      copy "$(MSBuildProjectDirectory)\*.addin" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)"
-      copy "$(TargetDir)*.dll" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
+		<PostBuildEvent>echo *** Configuration: $(Configuration)
+echo *** Copying results to $(RevitVersion)
+echo *** $(MSBuildProjectDirectory)
+if not exist "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin" mkdir "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
+copy "$(MSBuildProjectDirectory)\*.addin" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)"
+copy "$(TargetDir)*.dll" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
     </PostBuildEvent>
 		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
