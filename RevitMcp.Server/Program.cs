@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using RevitMcp.Server.Bridge;
+using RevitMcp.Server.Tools;
 
 // Redirect any stray stdout writes to stderr so they don't
 // interfere with MCP JSON-RPC messages on stdout.
@@ -24,7 +25,7 @@ builder.Services
         };
     })
     .WithStdioServerTransport()
-    .WithToolsFromAssembly();
+    .WithToolsFromAssembly(typeof(ElementTools).Assembly);
 
 var app = builder.Build();
 
