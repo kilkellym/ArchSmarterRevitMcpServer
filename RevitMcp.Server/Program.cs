@@ -22,7 +22,7 @@ builder.Services
 var app = builder.Build();
 
 // Connect the bridge client to the Revit add-in before accepting MCP calls.
-var bridge = app.Services.GetRequiredService<RevitBridgeClient>();
-await bridge.ConnectAsync();
+//var bridge = app.Services.GetRequiredService<RevitBridgeClient>();
+//await bridge.ConnectAsync();
 
 await app.RunAsync();

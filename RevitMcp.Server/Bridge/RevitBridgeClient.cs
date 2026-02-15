@@ -42,6 +42,11 @@ public sealed class RevitBridgeClient : IAsyncDisposable
     /// <returns>The bridge response from the Revit add-in.</returns>
     public async Task<BridgeResponse> SendAsync(BridgeRequest request, CancellationToken cancellationToken = default)
     {
+        if (_pipe is null || !_pipe.IsConnected)
+        {
+            await ConnectAsync();
+        }
+
         await _sendLock.WaitAsync(cancellationToken);
         try
         {
