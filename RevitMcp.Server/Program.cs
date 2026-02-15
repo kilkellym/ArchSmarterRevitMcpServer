@@ -1,9 +1,16 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using ModelContextProtocol.Server;
 using RevitMcp.Server.Bridge;
 
+// Redirect any stray stdout writes to stderr so they don't
+// interfere with MCP JSON-RPC messages on stdout.
+Console.SetOut(Console.Error);
+
 var builder = Host.CreateApplicationBuilder(args);
+builder.Logging.ClearProviders();
+builder.Logging.AddDebug();
 
 builder.Services.AddSingleton<RevitBridgeClient>();
 
