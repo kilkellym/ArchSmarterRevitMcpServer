@@ -54,4 +54,60 @@ public sealed class ElementTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Gets all parameters and their values for a specific Revit element.
+    /// </summary>
+    [McpServerTool(Name = "get_element_parameters"), Description(
+        "Get all parameters and their values for a specific Revit element. " +
+        "Returns parameter name, value, storage type (String, Integer, Double, ElementId), " +
+        "and whether it is a type or instance parameter. " +
+        "Use this after get_elements or get_element_by_id to inspect an element's properties.")]
+    public static async Task<string> GetElementParameters(
+        RevitBridgeClient bridgeClient,
+        [Description("The Revit element ID obtained from get_elements or get_element_by_id.")]
+        int elementId,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { elementId });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetElementParameters,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
+    /// Gets detailed information about a single Revit element by its ID.
+    /// </summary>
+    [McpServerTool(Name = "get_element_by_id"), Description(
+        "Get detailed information about a single Revit element by its ID. " +
+        "Returns the element's name, category, level, type name, bounding box coordinates, " +
+        "and location. Use this when you need full details about a specific element " +
+        "after discovering it through get_elements or count_elements.")]
+    public static async Task<string> GetElementById(
+        RevitBridgeClient bridgeClient,
+        [Description("The Revit element ID.")]
+        int elementId,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { elementId });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetElementById,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }

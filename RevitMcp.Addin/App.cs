@@ -17,7 +17,10 @@ internal class App : IExternalApplication
         // 1. Build the handler registry with all known command handlers.
         var registry = new HandlerRegistry(new ICommandHandler[]
         {
-            new GetElementsHandler()
+            new GetElementsHandler(),
+            new GetElementParametersHandler(),
+            new GetProjectInfoHandler(),
+            new GetElementByIdHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
