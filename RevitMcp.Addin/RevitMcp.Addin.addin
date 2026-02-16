@@ -1,23 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <RevitAddIns>
-  <AddIn Type="Command">
-    <Text>ArchSmarter Revit Mcp.Addin - Command 1</Text>
-    <Description>Some description</Description>
-    <Assembly>RevitMcp.Addin\RevitMcp.Addin.dll</Assembly>
-    <FullClassName>RevitMcp.Addin.Command1</FullClassName>
-    <ClientId>349e2993-01cf-43d2-9d89-9264b5de891f</ClientId>
-    <VendorId>com.YOUR COMPANY NAME</VendorId>
-    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
-  </AddIn>
-  <AddIn Type="Command">
-    <Text>RevitMcp.Addin - Command 2</Text>
-    <Description>Some description</Description>
-    <Assembly>RevitMcp.Addin\RevitMcp.Addin.dll</Assembly>
-    <FullClassName>RevitMcp.Addin.Command2</FullClassName>
-    <ClientId>64578b21-ebc3-4606-a01d-2786f9126a8f</ClientId>
-    <VendorId>com.YOUR COMPANY NAME</VendorId>
-    <VendorDescription>YOUR COMPANY NAME, YOUR COMPANY URL</VendorDescription>
-  </AddIn>
   <AddIn Type="Application">
     <Name>RevitMcp.Addin</Name>
     <Assembly>RevitMcp.Addin\RevitMcp.Addin.dll</Assembly>

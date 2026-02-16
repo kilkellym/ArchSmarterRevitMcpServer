@@ -1,11 +1,13 @@
 #nullable enable
 
+using RevitMcp.Addin;
+
 namespace RevitMcp.Addin.Status;
 
 /// <summary>
 /// Singleton that tracks the current state of the MCP pipe server and client connection.
 /// Updated by <see cref="Bridge.PipeServer"/> and read by the ribbon button's Idling handler
-/// and the <see cref="UI.McpStatusCommand"/> dialog.
+/// and the <see cref="Addin.McpStatusCommand"/> dialog.
 /// </summary>
 internal sealed class McpStatusTracker
 {

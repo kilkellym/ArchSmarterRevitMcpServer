@@ -1,7 +1,11 @@
 #nullable enable
+using RevitMcp;
+
+
+#nullable enable
 using RevitMcp.Addin.Status;
 
-namespace RevitMcp.Addin.UI;
+namespace RevitMcp.Addin;
 
 /// <summary>
 /// External command invoked by the MCP Status ribbon button.
@@ -81,9 +85,9 @@ public sealed class McpStatusCommand : IExternalCommand
     private static string FormatUptime(TimeSpan span)
     {
         if (span.TotalHours >= 1)
-            return $"{(int)span.TotalHours}h {span.Minutes}m (since {(DateTime.Now - span):h:mm tt})";
+            return $"{(int)span.TotalHours}h {span.Minutes}m (since {DateTime.Now - span:h:mm tt})";
 
-        return $"{(int)span.TotalMinutes}m (since {(DateTime.Now - span):h:mm tt})";
+        return $"{(int)span.TotalMinutes}m (since {DateTime.Now - span:h:mm tt})";
     }
 
     private static string FormatTimeAgo(DateTime time)

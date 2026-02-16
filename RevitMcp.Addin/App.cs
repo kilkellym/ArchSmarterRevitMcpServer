@@ -3,7 +3,6 @@ using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI.Events;
 using RevitMcp.Addin.Bridge;
 using RevitMcp.Addin.Status;
-using RevitMcp.Addin.UI;
 using RevitMcp.Core.Handlers;
 
 namespace RevitMcp.Addin;
