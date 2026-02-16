@@ -102,7 +102,7 @@ internal class App : IExternalApplication
                 return panel;
         }
 
-        return app.CreateRibbonPanel(panelName);
+        return app.CreateRibbonPanel("ArchSmarter", panelName);
     }
 
     /// <summary>
