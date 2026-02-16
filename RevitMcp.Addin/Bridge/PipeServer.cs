@@ -3,6 +3,7 @@ using System.IO.Pipes;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using RevitMcp.Addin.Status;
 using RevitMcp.Core.Messages;
 
 namespace RevitMcp.Addin.Bridge;
@@ -42,6 +43,10 @@ internal sealed class PipeServer : IDisposable
     public void Start()
     {
         _cts = new CancellationTokenSource();
+
+        var tracker = McpStatusTracker.Instance;
+        tracker.ServerStartTime = DateTime.Now;
+
         _listenTask = Task.Run(() => ListenAsync(_cts.Token));
     }
 
@@ -51,6 +56,10 @@ internal sealed class PipeServer : IDisposable
     public void Stop()
     {
         _cts?.Cancel();
+
+        McpStatusTracker.Instance.PipeState = PipeServerState.Stopped;
+        McpStatusTracker.Instance.IsClientConnected = false;
+
         try
         {
             _listenTask?.Wait(TimeSpan.FromSeconds(3));
@@ -67,6 +76,9 @@ internal sealed class PipeServer : IDisposable
     /// </summary>
     private async Task ListenAsync(CancellationToken ct)
     {
+        var tracker = McpStatusTracker.Instance;
+        tracker.PipeState = PipeServerState.Listening;
+
         while (!ct.IsCancellationRequested)
         {
             var pipe = new NamedPipeServerStream(
@@ -79,6 +91,9 @@ internal sealed class PipeServer : IDisposable
             try
             {
                 await pipe.WaitForConnectionAsync(ct);
+
+                tracker.IsClientConnected = true;
+
                 await HandleConnectionAsync(pipe, ct);
             }
             catch (OperationCanceledException)
@@ -88,9 +103,12 @@ internal sealed class PipeServer : IDisposable
             catch (Exception ex)
             {
                 Debug.WriteLine($"[PipeServer] Connection error: {ex.Message}");
+                tracker.RecordError(ex.Message);
+                tracker.PipeState = PipeServerState.Error;
             }
             finally
             {
+                tracker.IsClientConnected = false;
                 pipe.Dispose();
             }
         }
@@ -102,6 +120,8 @@ internal sealed class PipeServer : IDisposable
     /// </summary>
     private async Task HandleConnectionAsync(NamedPipeServerStream pipe, CancellationToken ct)
     {
+        var tracker = McpStatusTracker.Instance;
+
         while (pipe.IsConnected && !ct.IsCancellationRequested)
         {
             BridgeRequest request;
@@ -114,6 +134,8 @@ internal sealed class PipeServer : IDisposable
                 // Client disconnected cleanly.
                 break;
             }
+
+            tracker.RecordToolCall(request.Command);
 
             var tcs = new TaskCompletionSource<BridgeResponse>(
                 TaskCreationOptions.RunContinuationsAsynchronously);
