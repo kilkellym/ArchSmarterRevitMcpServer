@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
 		<UseWPF>true</UseWPF>
@@ -80,21 +80,31 @@
 	  <EmbeddedResource Include="Resources\Red_32.png" />
 	  <EmbeddedResource Include="Resources\Yellow_16.png" />
 	  <EmbeddedResource Include="Resources\Yellow_32.png" />
+	  <EmbeddedResource Include="Resources\Restart_16.png" />
+	  <EmbeddedResource Include="Resources\Restart_32.png" />
+	  <EmbeddedResource Include="Resources\Stop_16.png" />
+	  <EmbeddedResource Include="Resources\Stop_32.png" />
+	  <EmbeddedResource Include="Resources\Chat_16.png" />
+	  <EmbeddedResource Include="Resources\Chat_32.png" />
 	</ItemGroup>
 	
 	<ItemGroup>
 	  <PackageReference Include="System.Drawing.Common" Version="8.0.3" IncludeAssets="build; compile" PrivateAssets="All" />
-	  <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion).*" IncludeAssets="build; compile" PrivateAssets="All" />
+	  <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="2025.*" IncludeAssets="build; compile" PrivateAssets="All" />
+	  <PackageReference Include="System.Threading.Channels" Version="8.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\RevitMcp.Core\RevitMcp.Core.csproj" />
 	</ItemGroup>
 	
 	<PropertyGroup>
-		<PostBuildEvent>
-      echo *** Configuration: $(Configuration)
-      echo *** Copying results to $(RevitVersion)
-      echo *** $(MSBuildProjectDirectory)
-      if not exist "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin" mkdir "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
-      copy "$(MSBuildProjectDirectory)\*.addin" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)"
-      copy "$(TargetDir)*.dll" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
+		<PostBuildEvent>echo *** Configuration: $(Configuration)
+echo *** Copying results to $(RevitVersion)
+echo *** $(MSBuildProjectDirectory)
+if not exist "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin" mkdir "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
+copy "$(MSBuildProjectDirectory)\*.addin" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)"
+copy "$(TargetDir)*.dll" "$(AppData)\Autodesk\REVIT\Addins\$(RevitVersion)\RevitMcp.Addin"
     </PostBuildEvent>
 		<RunAnalyzersDuringBuild>False</RunAnalyzersDuringBuild>
 		<RunAnalyzersDuringLiveAnalysis>False</RunAnalyzersDuringLiveAnalysis>
