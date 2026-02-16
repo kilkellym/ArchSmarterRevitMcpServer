@@ -40,4 +40,9 @@ public static class CommandNames
     /// Extracts all rooms from the active Revit model with detailed spatial data.
     /// </summary>
     public const string ExportRoomData = "export_room_data";
+
+    /// <summary>
+    /// Sets a parameter value on a Revit element within a Transaction.
+    /// </summary>
+    public const string SetParameter = "set_parameter";
 }

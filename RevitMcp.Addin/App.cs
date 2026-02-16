@@ -35,7 +35,8 @@ internal class App : IExternalApplication
             new GetElementByIdHandler(),
             new AnalyzeModelStatisticsHandler(),
             new GetCurrentViewInfoHandler(),
-            new ExportRoomDataHandler()
+            new ExportRoomDataHandler(),
+            new SetParameterHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
