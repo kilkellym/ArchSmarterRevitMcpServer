@@ -142,4 +142,35 @@ public sealed class ElementTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Gets the currently selected elements in the active Revit view.
+    /// </summary>
+    [McpServerTool(Name = "get_selected_elements"), Description(
+        "Get the currently selected elements in the active Revit view. " +
+        "Returns the element ID, name, category, type name, level, and location for each " +
+        "selected element. If nothing is selected, returns an empty list with a message. " +
+        "Use this when the user says 'selected elements', 'current selection', or " +
+        "'what I have selected' to understand what they are working with.")]
+    public static async Task<string> GetSelectedElements(
+        RevitBridgeClient bridgeClient,
+        [Description("If true, include all instance parameters for each selected element. " +
+                     "If false, return only basic element info. Set to false for large selections " +
+                     "to keep the response concise.")]
+        bool includeParameters = false,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { includeParameters });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetSelectedElements,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }

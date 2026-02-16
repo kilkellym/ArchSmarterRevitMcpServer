@@ -34,8 +34,8 @@ internal sealed class ExternalEventExecutor : IExternalEventHandler
     /// </summary>
     public void Execute(UIApplication app)
     {
-        var doc = app.ActiveUIDocument?.Document;
-        if (doc is null)
+        var uiDoc = app.ActiveUIDocument;
+        if (uiDoc is null)
         {
             while (_channel.Reader.TryRead(out var dropped))
             {
@@ -51,7 +51,7 @@ internal sealed class ExternalEventExecutor : IExternalEventHandler
             {
                 if (_registry.TryGetHandler(pending.Request.Command, out var handler) && handler is not null)
                 {
-                    var response = handler.Handle(pending.Request, doc);
+                    var response = handler.Handle(pending.Request, uiDoc);
                     pending.Completion.TrySetResult(response);
                 }
                 else

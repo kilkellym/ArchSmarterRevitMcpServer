@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -21,10 +22,11 @@ public sealed class GetElementParametersHandler : ICommandHandler
     public string Command => CommandNames.GetElementParameters;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request, Document doc)
+    public BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc)
     {
         try
         {
+            var doc = uiDoc.Document;
             if (request.Payload?.TryGetProperty("elementId", out var idProp) != true)
                 return new BridgeResponse(Success: false, Error: "Missing required parameter: elementId");
 

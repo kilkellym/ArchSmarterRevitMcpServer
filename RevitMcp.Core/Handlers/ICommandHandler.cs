@@ -1,4 +1,4 @@
-using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Messages;
 
 namespace RevitMcp.Core.Handlers;
@@ -21,7 +21,8 @@ public interface ICommandHandler
     /// This method is called on Revit's main thread.
     /// </summary>
     /// <param name="request">The incoming bridge request with command parameters.</param>
-    /// <param name="doc">The active Revit <see cref="Document"/>.</param>
+    /// <param name="uiDoc">The active Revit <see cref="UIDocument"/>, providing access
+    /// to both <see cref="UIDocument.Document"/> and <see cref="UIDocument.Selection"/>.</param>
     /// <returns>A response indicating success or failure with optional data.</returns>
-    BridgeResponse Handle(BridgeRequest request, Document doc);
+    BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc);
 }

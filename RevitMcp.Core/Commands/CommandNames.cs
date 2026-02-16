@@ -45,4 +45,9 @@ public static class CommandNames
     /// Sets a parameter value on a Revit element within a Transaction.
     /// </summary>
     public const string SetParameter = "set_parameter";
+
+    /// <summary>
+    /// Gets the currently selected elements in the active Revit view.
+    /// </summary>
+    public const string GetSelectedElements = "get_selected_elements";
 }

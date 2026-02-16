@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.DB.Architecture;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -24,10 +25,11 @@ public sealed class ExportRoomDataHandler : ICommandHandler
     public string Command => CommandNames.ExportRoomData;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request, Document doc)
+    public BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc)
     {
         try
         {
+            var doc = uiDoc.Document;
             var levelFilter = request.Payload?.TryGetProperty("level", out var levelProp) == true
                 ? levelProp.GetString()
                 : null;

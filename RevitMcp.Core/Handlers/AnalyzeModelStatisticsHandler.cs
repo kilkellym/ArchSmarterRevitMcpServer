@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -16,10 +17,11 @@ public sealed class AnalyzeModelStatisticsHandler : ICommandHandler
     public string Command => CommandNames.AnalyzeModelStatistics;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request, Document doc)
+    public BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc)
     {
         try
         {
+            var doc = uiDoc.Document;
             using var collector = new FilteredElementCollector(doc);
             var elements = collector
                 .WhereElementIsNotElementType()

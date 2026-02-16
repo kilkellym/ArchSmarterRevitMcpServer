@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -15,10 +16,11 @@ public sealed class GetProjectInfoHandler : ICommandHandler
     public string Command => CommandNames.GetProjectInfo;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request, Document doc)
+    public BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc)
     {
         try
         {
+            var doc = uiDoc.Document;
             var info = doc.ProjectInformation;
 
             var result = new

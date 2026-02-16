@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Autodesk.Revit.DB;
+using Autodesk.Revit.UI;
 using RevitMcp.Core.Commands;
 using RevitMcp.Core.Messages;
 
@@ -16,10 +17,11 @@ public sealed class GetCurrentViewInfoHandler : ICommandHandler
     public string Command => CommandNames.GetCurrentViewInfo;
 
     /// <inheritdoc />
-    public BridgeResponse Handle(BridgeRequest request, Document doc)
+    public BridgeResponse Handle(BridgeRequest request, UIDocument uiDoc)
     {
         try
         {
+            var doc = uiDoc.Document;
             var view = doc.ActiveView;
             if (view is null)
                 return new BridgeResponse(Success: false, Error: "No active view.");
