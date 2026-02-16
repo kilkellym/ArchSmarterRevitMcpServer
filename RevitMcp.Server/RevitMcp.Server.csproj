@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -14,6 +14,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\RevitMcp.Core\RevitMcp.Core.csproj" />
-  </ItemGroup>
+  </ItemGroup>    <Copy SourceFiles="@(ReleaseFiles)" DestinationFolder="G:\My Drive\_Projects\Revit MCP Server\Release\%(RecursiveDir)" SkipUnchangedFiles="true" />
+  </Target>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="if &quot;$(Configuration)&quot; == &quot;Release&quot; (&#xA;    xcopy &quot;$(TargetDir)*.*&quot; &quot;G:\My Drive\_Projects\Revit MCP Server\Release\&quot; /Y /E /I&#xA;)" />
+
 
 </Project>
