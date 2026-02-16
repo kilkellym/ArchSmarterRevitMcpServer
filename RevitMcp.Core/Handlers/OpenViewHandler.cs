@@ -22,8 +22,10 @@ public sealed class OpenViewHandler : ICommandHandler
         {
             var doc = uiDoc.Document;
 
-            var hasViewId = request.Payload?.TryGetProperty("viewId", out var viewIdProp) == true;
-            var hasViewName = request.Payload?.TryGetProperty("viewName", out var viewNameProp) == true;
+            JsonElement viewIdProp = default;
+            JsonElement viewNameProp = default;
+            var hasViewId = request.Payload?.TryGetProperty("viewId", out viewIdProp) == true;
+            var hasViewName = request.Payload?.TryGetProperty("viewName", out viewNameProp) == true;
 
             if (!hasViewId && !hasViewName)
                 return new BridgeResponse(Success: false, Error: "Provide either viewId or viewName.");
