@@ -31,4 +31,16 @@ internal sealed class RequestChannel
 
     /// <summary>Reader used by <see cref="ExternalEventExecutor"/> to drain requests.</summary>
     public ChannelReader<PendingRequest> Reader => _channel.Reader;
+
+    /// <summary>
+    /// Drains any pending requests from the channel, cancelling their completions.
+    /// Used during connection restart to clear stale requests.
+    /// </summary>
+    public void Clear()
+    {
+        while (Reader.TryRead(out var pending))
+        {
+            pending.Completion.TrySetCanceled();
+        }
+    }
 }

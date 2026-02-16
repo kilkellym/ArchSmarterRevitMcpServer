@@ -3,6 +3,7 @@ using System.Windows.Media.Imaging;
 using Autodesk.Revit.UI.Events;
 using RevitMcp.Addin.Bridge;
 using RevitMcp.Addin.Status;
+using RevitMcp.Addin.UI;
 using RevitMcp.Core.Handlers;
 
 namespace RevitMcp.Addin;
@@ -14,10 +15,19 @@ namespace RevitMcp.Addin;
 /// </summary>
 internal class App : IExternalApplication
 {
-    private PipeServer? _pipeServer;
     private PushButton? _statusButton;
     private ConnectionStatus _lastIconState = ConnectionStatus.Error;
     private DateTime _lastIconCheck = DateTime.MinValue;
+
+    /// <summary>
+    /// Static reference to the pipe server so external commands can restart it.
+    /// </summary>
+    public static PipeServer? PipeServer { get; private set; }
+
+    /// <summary>
+    /// Static reference to the request channel so external commands can clear pending requests.
+    /// </summary>
+    public static RequestChannel? Channel { get; private set; }
 
     /// <summary>
     /// Minimum interval between icon-state checks in the Idling handler.
@@ -50,16 +60,17 @@ internal class App : IExternalApplication
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
         var channel = new RequestChannel();
+        Channel = channel;
 
         // 3. Create the external-event handler that drains the channel on Revit's main thread.
         var executor = new ExternalEventExecutor(channel, registry);
         var externalEvent = ExternalEvent.Create(executor);
 
         // 4. Start the named-pipe server on a background thread.
-        _pipeServer = new PipeServer(channel, externalEvent);
-        _pipeServer.Start();
+        PipeServer = new PipeServer(channel, externalEvent);
+        PipeServer.Start();
 
-        // 5. Create the ribbon panel and MCP Status button.
+        // 5. Create the ribbon panel and all buttons.
         CreateRibbonUI(app);
 
         // 6. Subscribe to Idling for periodic icon updates.
@@ -72,33 +83,72 @@ internal class App : IExternalApplication
     {
         app.Idling -= OnIdling;
 
-        _pipeServer?.Dispose();
-        _pipeServer = null;
+        PipeServer?.Dispose();
+        PipeServer = null;
+        Channel = null;
 
         return Result.Succeeded;
     }
 
     /// <summary>
-    /// Creates the "Revit MCP" ribbon panel with the MCP Status push button.
+    /// Creates the "Revit MCP" ribbon panel with all push buttons.
     /// </summary>
     private void CreateRibbonUI(UIControlledApplication app)
     {
         var panel = GetOrCreatePanel(app, "Revit MCP");
+        var assemblyPath = Assembly.GetExecutingAssembly().Location;
 
-        var buttonData = new PushButtonData(
+        // MCP Status button
+        var statusData = new PushButtonData(
             "btnMcpStatus",
             "MCP\nStatus",
-            Assembly.GetExecutingAssembly().Location,
+            assemblyPath,
             typeof(McpStatusCommand).FullName)
         {
-            ToolTip = "View the status of the MCP server connection"
+            ToolTip = "View the status of the MCP server connection",
+            LargeImage = ConvertToImageSource(Properties.Resources.Red_32),
+            Image = ConvertToImageSource(Properties.Resources.Red_16)
         };
+        _statusButton = panel.AddItem(statusData) as PushButton;
 
-        // Start with red icon (server not yet confirmed listening).
-        buttonData.LargeImage = ConvertToImageSource(Properties.Resources.Red_32);
-        buttonData.Image = ConvertToImageSource(Properties.Resources.Red_16);
+        // Restart Connection button
+        var restartData = new PushButtonData(
+            "btnRestartConnection",
+            "Restart\nConnection",
+            assemblyPath,
+            typeof(RestartConnectionCommand).FullName)
+        {
+            ToolTip = "Restart the MCP pipe server. Use this if tool calls are timing out or the connection seems stuck.",
+            LargeImage = ConvertToImageSource(Properties.Resources.Restart_32),
+            Image = ConvertToImageSource(Properties.Resources.Restart_16)
+        };
+        panel.AddItem(restartData);
 
-        _statusButton = panel.AddItem(buttonData) as PushButton;
+        // Kill Server button
+        var killData = new PushButtonData(
+            "btnKillServer",
+            "Kill\nServer",
+            assemblyPath,
+            typeof(KillMcpServerCommand).FullName)
+        {
+            ToolTip = "Terminate the MCP server process. Use this if the server is unresponsive. Claude Desktop will start a new server automatically.",
+            LargeImage = ConvertToImageSource(Properties.Resources.Stop_32),
+            Image = ConvertToImageSource(Properties.Resources.Stop_16)
+        };
+        panel.AddItem(killData);
+
+        // Open Claude button
+        var claudeData = new PushButtonData(
+            "btnOpenClaude",
+            "Open\nClaude",
+            assemblyPath,
+            typeof(OpenClaudeCommand).FullName)
+        {
+            ToolTip = "Launch Claude Desktop or bring it to the foreground",
+            LargeImage = ConvertToImageSource(Properties.Resources.Chat_32),
+            Image = ConvertToImageSource(Properties.Resources.Chat_16)
+        };
+        panel.AddItem(claudeData);
     }
 
     /// <summary>

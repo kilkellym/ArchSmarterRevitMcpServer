@@ -163,5 +163,77 @@ namespace RevitMcp.Addin.Properties
                 return ((byte[])(obj));
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Restart_16
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Restart_16", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Restart_32
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Restart_32", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Stop_16
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Stop_16", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Stop_32
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Stop_32", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Chat_16
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Chat_16", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] Chat_32
+        {
+            get
+            {
+                object obj = ResourceManager.GetObject("Chat_32", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
