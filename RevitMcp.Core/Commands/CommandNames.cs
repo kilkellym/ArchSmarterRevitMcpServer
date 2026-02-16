@@ -50,4 +50,28 @@ public static class CommandNames
     /// Gets the currently selected elements in the active Revit view.
     /// </summary>
     public const string GetSelectedElements = "get_selected_elements";
+
+    /// <summary>Opens a view and makes it the active view.</summary>
+    public const string OpenView = "open_view";
+
+    /// <summary>Creates a new floor plan or ceiling plan view.</summary>
+    public const string CreatePlanView = "create_plan_view";
+
+    /// <summary>Creates a new elevation view at a specified location.</summary>
+    public const string CreateElevationView = "create_elevation_view";
+
+    /// <summary>Creates a new section view defined by a bounding box.</summary>
+    public const string CreateSectionView = "create_section_view";
+
+    /// <summary>Creates a new schedule view for a category.</summary>
+    public const string CreateScheduleView = "create_schedule_view";
+
+    /// <summary>Creates a new sheet in the project.</summary>
+    public const string CreateSheet = "create_sheet";
+
+    /// <summary>Places a view on a sheet by creating a viewport.</summary>
+    public const string AddViewToSheet = "add_view_to_sheet";
+
+    /// <summary>Deletes one or more elements from the model.</summary>
+    public const string DeleteElements = "delete_elements";
 }

@@ -173,4 +173,35 @@ public sealed class ElementTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Deletes one or more elements from the Revit model.
+    /// </summary>
+    [McpServerTool(Name = "delete_elements"), Description(
+        "Delete one or more elements from the Revit model. " +
+        "IMPORTANT: By default (confirm=false), this runs in preview mode and only shows what " +
+        "would be deleted without actually deleting anything. Set confirm=true to perform the deletion. " +
+        "Maximum 100 elements per call. Returns deleted element details and any errors.")]
+    public static async Task<string> DeleteElements(
+        RevitBridgeClient bridgeClient,
+        [Description("Array of Revit element IDs to delete.")]
+        long[] elementIds,
+        [Description("Set to true to actually delete the elements. " +
+                     "When false (default), runs in preview mode showing what would be deleted.")]
+        bool confirm = false,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { elementIds, confirm });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.DeleteElements,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }

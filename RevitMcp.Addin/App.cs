@@ -37,7 +37,15 @@ internal class App : IExternalApplication
             new GetCurrentViewInfoHandler(),
             new ExportRoomDataHandler(),
             new SetParameterHandler(),
-            new GetSelectedElementsHandler()
+            new GetSelectedElementsHandler(),
+            new OpenViewHandler(),
+            new CreatePlanViewHandler(),
+            new CreateElevationViewHandler(),
+            new CreateSectionViewHandler(),
+            new CreateScheduleViewHandler(),
+            new CreateSheetHandler(),
+            new AddViewToSheetHandler(),
+            new DeleteElementsHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
