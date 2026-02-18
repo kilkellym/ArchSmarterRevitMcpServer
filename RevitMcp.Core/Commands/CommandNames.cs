@@ -74,4 +74,28 @@ public static class CommandNames
 
     /// <summary>Deletes one or more elements from the model.</summary>
     public const string DeleteElements = "delete_elements";
+
+    /// <summary>Gets a single parameter value from an element by parameter name.</summary>
+    public const string GetParameterValue = "get_parameter_value";
+
+    /// <summary>Creates a straight wall along a line between two points.</summary>
+    public const string CreateWall = "create_wall";
+
+    /// <summary>Creates a text note annotation in a view.</summary>
+    public const string CreateTextNote = "create_text_note";
+
+    /// <summary>Inserts a component family instance at a point.</summary>
+    public const string InsertFamilyInstanceByPoint = "insert_family_instance_by_point";
+
+    /// <summary>Creates a railing along a path of connected line segments.</summary>
+    public const string CreateRailing = "create_railing";
+
+    /// <summary>Inserts a group instance at a point.</summary>
+    public const string InsertGroup = "insert_group";
+
+    /// <summary>Creates a dimension between two or more elements in a view.</summary>
+    public const string CreateDimension = "create_dimension";
+
+    /// <summary>Creates a floor from a closed boundary polygon.</summary>
+    public const string CreateFloor = "create_floor";
 }
