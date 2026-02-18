@@ -55,7 +55,15 @@ internal class App : IExternalApplication
             new CreateScheduleViewHandler(),
             new CreateSheetHandler(),
             new AddViewToSheetHandler(),
-            new DeleteElementsHandler()
+            new DeleteElementsHandler(),
+            new GetParameterValueHandler(),
+            new CreateWallHandler(),
+            new CreateTextNoteHandler(),
+            new InsertFamilyInstanceByPointHandler(),
+            new CreateRailingHandler(),
+            new InsertGroupHandler(),
+            new CreateDimensionHandler(),
+            new CreateFloorHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
