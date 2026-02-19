@@ -63,7 +63,12 @@ internal class App : IExternalApplication
             new CreateRailingHandler(),
             new InsertGroupHandler(),
             new CreateDimensionHandler(),
-            new CreateFloorHandler()
+            new CreateFloorHandler(),
+            new CreateDetailLineHandler(),
+            new GetSheetViewsHandler(),
+            new GetElementsInViewHandler(),
+            new FindElementsByParameterHandler(),
+            new BatchSetParametersHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
