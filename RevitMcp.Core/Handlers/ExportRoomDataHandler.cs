@@ -90,27 +90,9 @@ public sealed class ExportRoomDataHandler : ICommandHandler
                     Name = room.Name,
                     Number = room.Number,
                     LevelName = roomLevelName,
-                    Area = new
-                    {
-                        SquareFeet = areaFt2,
-                        SquareMeters = areaFt2.HasValue
-                            ? UnitUtils.ConvertFromInternalUnits(areaFt2.Value, UnitTypeId.SquareMeters)
-                            : (double?)null
-                    },
-                    Volume = new
-                    {
-                        CubicFeet = volumeFt3,
-                        CubicMeters = volumeFt3.HasValue
-                            ? UnitUtils.ConvertFromInternalUnits(volumeFt3.Value, UnitTypeId.CubicMeters)
-                            : (double?)null
-                    },
-                    Perimeter = new
-                    {
-                        Feet = perimeterFt,
-                        Meters = perimeterFt.HasValue
-                            ? UnitUtils.ConvertFromInternalUnits(perimeterFt.Value, UnitTypeId.Meters)
-                            : (double?)null
-                    },
+                    AreaSqFt = areaFt2.HasValue ? Math.Round(areaFt2.Value, 2) : (double?)null,
+                    VolumeCuFt = volumeFt3.HasValue ? Math.Round(volumeFt3.Value, 2) : (double?)null,
+                    PerimeterFt = perimeterFt.HasValue ? Math.Round(perimeterFt.Value, 2) : (double?)null,
                     Department = roomDepartment,
                     UpperOffset = GetParameterValueString(room, BuiltInParameter.ROOM_UPPER_OFFSET),
                     LimitOffset = GetParameterValueString(room, BuiltInParameter.ROOM_LOWER_OFFSET),

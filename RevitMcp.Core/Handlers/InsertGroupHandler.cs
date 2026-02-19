@@ -14,9 +14,9 @@ namespace RevitMcp.Core.Handlers;
 /// Expected payload properties:
 /// <list type="bullet">
 ///   <item><c>groupName</c> (string, required) – The group type name.</item>
-///   <item><c>x</c> (double, required) – X coordinate in millimeters.</item>
-///   <item><c>y</c> (double, required) – Y coordinate in millimeters.</item>
-///   <item><c>z</c> (double, optional) – Z coordinate in millimeters. Defaults to 0.</item>
+///   <item><c>x</c> (double, required) – X coordinate in decimal feet.</item>
+///   <item><c>y</c> (double, required) – Y coordinate in decimal feet.</item>
+///   <item><c>z</c> (double, optional) – Z coordinate in decimal feet. Defaults to 0.</item>
 /// </list>
 /// </remarks>
 public sealed class InsertGroupHandler : ICommandHandler
@@ -42,15 +42,10 @@ public sealed class InsertGroupHandler : ICommandHandler
             if (string.IsNullOrEmpty(groupName))
                 return new BridgeResponse(Success: false, Error: "groupName cannot be empty.");
 
-            var xMm = xProp.GetDouble();
-            var yMm = yProp.GetDouble();
-            var zMm = request.Payload?.TryGetProperty("z", out var zProp) == true
+            var x = xProp.GetDouble();
+            var y = yProp.GetDouble();
+            var z = request.Payload?.TryGetProperty("z", out var zProp) == true
                 ? zProp.GetDouble() : 0.0;
-
-            // Convert mm to feet
-            var xFt = UnitUtils.ConvertToInternalUnits(xMm, UnitTypeId.Millimeters);
-            var yFt = UnitUtils.ConvertToInternalUnits(yMm, UnitTypeId.Millimeters);
-            var zFt = UnitUtils.ConvertToInternalUnits(zMm, UnitTypeId.Millimeters);
 
             // Find GroupType by name
             using var collector = new FilteredElementCollector(doc);
@@ -74,7 +69,7 @@ public sealed class InsertGroupHandler : ICommandHandler
 
             try
             {
-                var location = new XYZ(xFt, yFt, zFt);
+                var location = new XYZ(x, y, z);
                 var group = doc.Create.PlaceGroup(location, groupType);
 
                 transaction.Commit();
@@ -83,7 +78,7 @@ public sealed class InsertGroupHandler : ICommandHandler
                 {
                     Id = group.Id.Value,
                     GroupTypeName = groupType.Name,
-                    LocationMm = new { X = xMm, Y = yMm, Z = zMm }
+                    LocationFt = new { X = x, Y = y, Z = z }
                 };
 
                 var data = JsonSerializer.SerializeToElement(result);

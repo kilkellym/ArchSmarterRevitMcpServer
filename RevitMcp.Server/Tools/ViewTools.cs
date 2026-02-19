@@ -77,14 +77,14 @@ public sealed class ViewTools
     /// </summary>
     [McpServerTool(Name = "create_elevation_view"), Description(
         "Create a new elevation view at a specified location. " +
-        "Requires X/Y coordinates (in millimeters) and a level name. The level must have an existing plan view. " +
+        "Requires X/Y coordinates (in decimal feet) and a level name. The level must have an existing plan view. " +
         "Direction can be 'north', 'south', 'east', or 'west'. " +
         "Returns the new view's Id, Name, MarkerId, and ViewType.")]
     public static async Task<string> CreateElevationView(
         RevitBridgeClient bridgeClient,
-        [Description("X coordinate in millimeters for the elevation marker location.")]
+        [Description("X coordinate in decimal feet for the elevation marker location.")]
         double x,
-        [Description("Y coordinate in millimeters for the elevation marker location.")]
+        [Description("Y coordinate in decimal feet for the elevation marker location.")]
         double y,
         [Description("The name of the level where the elevation marker is placed (e.g. 'Level 1').")]
         string levelName,
@@ -113,26 +113,26 @@ public sealed class ViewTools
     /// </summary>
     [McpServerTool(Name = "create_section_view"), Description(
         "Create a new section view defined by an origin point, view direction, and bounding box dimensions. " +
-        "All coordinates and dimensions are in millimeters. " +
+        "All coordinates and dimensions are in decimal feet. " +
         "Returns the new view's Id, Name, and ViewType.")]
     public static async Task<string> CreateSectionView(
         RevitBridgeClient bridgeClient,
-        [Description("X coordinate of the section origin in millimeters.")]
+        [Description("X coordinate of the section origin in decimal feet.")]
         double originX,
-        [Description("Y coordinate of the section origin in millimeters.")]
+        [Description("Y coordinate of the section origin in decimal feet.")]
         double originY,
-        [Description("Z coordinate of the section origin in millimeters.")]
+        [Description("Z coordinate of the section origin in decimal feet.")]
         double originZ,
         [Description("X component of the view direction vector (horizontal plane).")]
         double directionX,
         [Description("Y component of the view direction vector (horizontal plane).")]
         double directionY,
-        [Description("Width of the section view in millimeters. Defaults to 10000.")]
-        double width = 10000,
-        [Description("Height of the section view in millimeters. Defaults to 10000.")]
-        double height = 10000,
-        [Description("Depth (far clip) of the section view in millimeters. Defaults to 10000.")]
-        double depth = 10000,
+        [Description("Width of the section view in decimal feet. Defaults to 30.")]
+        double width = 30.0,
+        [Description("Height of the section view in decimal feet. Defaults to 30.")]
+        double height = 30.0,
+        [Description("Depth (far clip) of the section view in decimal feet. Defaults to 30.")]
+        double depth = 30.0,
         [Description("Optional custom name for the new view.")]
         string? viewName = null,
         CancellationToken cancellationToken = default)

@@ -18,8 +18,8 @@ public sealed class RoomTools
     /// </summary>
     [McpServerTool(Name = "export_room_data"), Description(
         "Extract all rooms from the active Revit model with detailed spatial and property data. " +
-        "Returns room name, number, level, area (in square feet and square meters), " +
-        "volume (in cubic feet and cubic meters), perimeter (in feet and meters), department, " +
+        "Returns room name, number, level, area (in square feet), " +
+        "volume (in cubic feet), perimeter (in feet), department, " +
         "upper and lower offsets, bounding elements, and any custom parameters. " +
         "Use this for programming verification, space analysis, or code compliance checks.")]
     public static async Task<string> ExportRoomData(

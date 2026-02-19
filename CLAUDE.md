@@ -54,7 +54,7 @@ All projects target .NET 8.
 - FilteredElementCollector is IDisposable; wrap in using or call .ToList()
 - Element.Name can throw for some types; wrap in try/catch
 - BuiltInCategory enum names don't always match user-facing category names
-- Revit uses feet internally; use UnitUtils.ConvertFromInternalUnits for display
+- Revit uses feet internally; all MCP tool inputs and outputs use decimal feet (no conversion needed)
 - Parameter.Set() with wrong StorageType throws; check StorageType first
 - Element.Id.Value replaces Element.Id.IntegerValue in Revit 2025+
 

@@ -225,7 +225,7 @@ public sealed class CreateDimensionHandler : ICommandHandler
 
         // Use the same Z for a horizontal dimension line, offset above elements
         var maxZ = Math.Max(bb1.Max.Z, bb2.Max.Z);
-        var offsetZ = maxZ + UnitUtils.ConvertToInternalUnits(500, UnitTypeId.Millimeters);
+        var offsetZ = maxZ + 1.5;
 
         var p1 = new XYZ(center1.X, center1.Y, offsetZ);
         var p2 = new XYZ(center2.X, center2.Y, offsetZ);

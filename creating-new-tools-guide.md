@@ -71,7 +71,7 @@ The tool description is the single most important thing you write. It's how Clau
 
 **Specify parameter formats.** "Revit category name, e.g., 'Walls', 'Doors', 'Floors'" is better than just "category."
 
-**Mention units if relevant.** "Returns area in square feet and square meters" or "Elevation in millimeters."
+**Mention units if relevant.** "Returns area in square feet" or "Elevation in decimal feet."
 
 ### Description Template
 
@@ -147,7 +147,7 @@ The handler should:
   ExternalFileReference
 - Get the link status from ExternalFileReference.GetLinkedFileStatus()
 - Get the transform from RevitLinkInstance.GetTransform() and return the 
-  origin as X, Y, Z in millimeters
+  origin as X, Y, Z in decimal feet
 - Skip any null references gracefully
 - Apply statusFilter if provided
 ```
@@ -192,7 +192,7 @@ The handler should:
 
 **Mention edge cases explicitly.** "Element.Name can throw for some element types, wrap in try/catch." or "Skip rooms where Location is null (unplaced rooms)." Claude Code won't always anticipate Revit quirks.
 
-**Specify the unit conversions.** "Convert from internal units (feet) to millimeters using UnitUtils.ConvertFromInternalUnits(value, UnitTypeId.Millimeters)." The Revit API uses feet internally and this is a common source of bugs.
+**All MCP tool inputs and outputs use decimal feet (Revit internal units).** No unit conversion is needed in handlers. The LLM handles any user-facing unit conversion before calling tools.
 
 **State whether a Transaction is needed.** Any tool that modifies the model needs a Transaction. Tell Claude Code the transaction name pattern: "MCP: [Action Description]".
 
@@ -231,7 +231,7 @@ The handler should:
 | Tool hangs indefinitely | Pipe connection timeout missing, or handler is deadlocking Revit's main thread |
 | Tool returns empty data | FilteredElementCollector query is too restrictive, or wrong BuiltInCategory |
 | Tool returns error about thread | Revit API called from background thread instead of through ExternalEvent/Idling |
-| Parameter values are wrong magnitude | Missing unit conversion (feet to mm or vice versa) |
+| Parameter values are wrong magnitude | Tool inputs/outputs should be in decimal feet (Revit internal units) — no conversion needed |
 
 ---
 

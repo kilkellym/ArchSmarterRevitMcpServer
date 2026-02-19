@@ -18,7 +18,7 @@ public sealed class FamilyTools
     /// </summary>
     [McpServerTool(Name = "insert_family_instance_by_point"), Description(
         "Insert a component family instance (e.g. furniture, fixtures, doors, windows) at a point. " +
-        "Requires the family name, X/Y coordinates in millimeters, and a level name. " +
+        "Requires the family name, X/Y coordinates in decimal feet, and a level name. " +
         "Optionally specify a type name within the family. " +
         "Use get_elements with a category filter to discover available family names first. " +
         "Returns the new instance's Id, family name, type name, and level.")]
@@ -26,15 +26,15 @@ public sealed class FamilyTools
         RevitBridgeClient bridgeClient,
         [Description("The family name (e.g. 'Single-Flush', 'M_Single-Flush').")]
         string familyName,
-        [Description("X coordinate in millimeters for the placement point.")]
+        [Description("X coordinate in decimal feet for the placement point.")]
         double x,
-        [Description("Y coordinate in millimeters for the placement point.")]
+        [Description("Y coordinate in decimal feet for the placement point.")]
         double y,
         [Description("Name of the level to place the instance on (e.g. 'Level 1').")]
         string levelName,
         [Description("The specific type/size within the family. If omitted, uses the first available type.")]
         string? typeName = null,
-        [Description("Z coordinate in millimeters (elevation above level). Defaults to 0.")]
+        [Description("Z coordinate in decimal feet (elevation above level). Defaults to 0.")]
         double z = 0,
         [Description("Whether to place as structural (e.g. structural column vs architectural column).")]
         bool structural = false,
@@ -59,17 +59,17 @@ public sealed class FamilyTools
     /// </summary>
     [McpServerTool(Name = "insert_group"), Description(
         "Insert a group instance at a point. " +
-        "Requires the group type name and X/Y coordinates in millimeters. " +
+        "Requires the group type name and X/Y coordinates in decimal feet. " +
         "Returns the new group's Id, group type name, and location.")]
     public static async Task<string> InsertGroup(
         RevitBridgeClient bridgeClient,
         [Description("Name of the group type to insert.")]
         string groupName,
-        [Description("X coordinate in millimeters for the group placement point.")]
+        [Description("X coordinate in decimal feet for the group placement point.")]
         double x,
-        [Description("Y coordinate in millimeters for the group placement point.")]
+        [Description("Y coordinate in decimal feet for the group placement point.")]
         double y,
-        [Description("Z coordinate in millimeters. Defaults to 0.")]
+        [Description("Z coordinate in decimal feet. Defaults to 0.")]
         double z = 0,
         CancellationToken cancellationToken = default)
     {
