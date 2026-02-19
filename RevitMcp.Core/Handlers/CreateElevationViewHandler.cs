@@ -29,18 +29,14 @@ public sealed class CreateElevationViewHandler : ICommandHandler
             if (request.Payload?.TryGetProperty("levelName", out var levelProp) != true)
                 return new BridgeResponse(Success: false, Error: "Missing required parameter: levelName");
 
-            var xMm = xProp.GetDouble();
-            var yMm = yProp.GetDouble();
+            var x = xProp.GetDouble();
+            var y = yProp.GetDouble();
             var levelName = levelProp.GetString();
 
             var direction = request.Payload?.TryGetProperty("direction", out var dirProp) == true
                 ? dirProp.GetString() ?? "north" : "north";
             var viewName = request.Payload?.TryGetProperty("viewName", out var nameProp) == true
                 ? nameProp.GetString() : null;
-
-            // Convert mm to feet
-            var xFt = UnitUtils.ConvertToInternalUnits(xMm, UnitTypeId.Millimeters);
-            var yFt = UnitUtils.ConvertToInternalUnits(yMm, UnitTypeId.Millimeters);
 
             // Find the level
             using var levelCollector = new FilteredElementCollector(doc);
@@ -84,7 +80,7 @@ public sealed class CreateElevationViewHandler : ICommandHandler
 
             try
             {
-                var markerLocation = new XYZ(xFt, yFt, level.Elevation);
+                var markerLocation = new XYZ(x, y, level.Elevation);
                 var marker = ElevationMarker.CreateElevationMarker(doc, viewFamilyType.Id, markerLocation, 100);
                 var elevView = marker.CreateElevation(doc, planView.Id, sideIndex);
 

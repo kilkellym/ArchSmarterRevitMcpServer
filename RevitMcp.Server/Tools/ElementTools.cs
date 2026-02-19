@@ -116,8 +116,9 @@ public sealed class ElementTools
     /// </summary>
     [McpServerTool(Name = "set_parameter"), Description(
         "Set a parameter value on a Revit element. Requires the element ID, the parameter name, " +
-        "and the new value. The value will be converted to the appropriate type based on the " +
-        "parameter's StorageType. Returns the previous value and the new value for confirmation. " +
+        "and the new value as a string. For numeric (Double) parameters with units, provide the value " +
+        "in Revit internal units (decimal feet for length, square feet for area, etc.). " +
+        "Returns the previous value and the new value for confirmation. " +
         "This modifies the model and requires a Transaction.")]
     public static async Task<string> SetParameter(
         RevitBridgeClient bridgeClient,

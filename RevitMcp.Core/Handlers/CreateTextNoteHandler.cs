@@ -14,8 +14,8 @@ namespace RevitMcp.Core.Handlers;
 /// Expected payload properties:
 /// <list type="bullet">
 ///   <item><c>viewId</c> (long, required) – Element ID of the view.</item>
-///   <item><c>x</c> (double, required) – X coordinate in millimeters.</item>
-///   <item><c>y</c> (double, required) – Y coordinate in millimeters.</item>
+///   <item><c>x</c> (double, required) – X coordinate in decimal feet.</item>
+///   <item><c>y</c> (double, required) – Y coordinate in decimal feet.</item>
 ///   <item><c>text</c> (string, required) – The text content.</item>
 ///   <item><c>textNoteTypeName</c> (string, optional) – TextNoteType name.</item>
 /// </list>
@@ -43,8 +43,8 @@ public sealed class CreateTextNoteHandler : ICommandHandler
                 return new BridgeResponse(Success: false, Error: "Missing required parameter: text");
 
             var viewId = new ElementId(viewIdProp.GetInt64());
-            var xMm = xProp.GetDouble();
-            var yMm = yProp.GetDouble();
+            var x = xProp.GetDouble();
+            var y = yProp.GetDouble();
             var text = textProp.GetString();
 
             if (string.IsNullOrEmpty(text))
@@ -61,10 +61,6 @@ public sealed class CreateTextNoteHandler : ICommandHandler
 
             if (view.IsTemplate)
                 return new BridgeResponse(Success: false, Error: "Cannot place text notes in a view template.");
-
-            // --- Convert mm to feet ---
-            var xFt = UnitUtils.ConvertToInternalUnits(xMm, UnitTypeId.Millimeters);
-            var yFt = UnitUtils.ConvertToInternalUnits(yMm, UnitTypeId.Millimeters);
 
             // --- Find TextNoteType ---
             using var tntCollector = new FilteredElementCollector(doc);
@@ -92,7 +88,7 @@ public sealed class CreateTextNoteHandler : ICommandHandler
             }
 
             // --- Create the text note ---
-            var position = new XYZ(xFt, yFt, 0);
+            var position = new XYZ(x, y, 0);
 
             using var transaction = new Transaction(doc, "MCP: Create Text Note");
             transaction.Start();

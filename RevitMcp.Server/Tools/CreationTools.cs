@@ -18,23 +18,23 @@ public sealed class CreationTools
     /// </summary>
     [McpServerTool(Name = "create_wall"), Description(
         "Create a straight wall between two points. " +
-        "Requires start and end coordinates in millimeters, a level name, " +
+        "Requires start and end coordinates in decimal feet, a level name, " +
         "and optionally a wall type name and height. " +
         "Returns the new wall's Id, type name, level, length, and height.")]
     public static async Task<string> CreateWall(
         RevitBridgeClient bridgeClient,
-        [Description("X coordinate of wall start point in millimeters.")]
+        [Description("X coordinate of wall start point in decimal feet.")]
         double startX,
-        [Description("Y coordinate of wall start point in millimeters.")]
+        [Description("Y coordinate of wall start point in decimal feet.")]
         double startY,
-        [Description("X coordinate of wall end point in millimeters.")]
+        [Description("X coordinate of wall end point in decimal feet.")]
         double endX,
-        [Description("Y coordinate of wall end point in millimeters.")]
+        [Description("Y coordinate of wall end point in decimal feet.")]
         double endY,
         [Description("Name of the level the wall is placed on (e.g. 'Level 1').")]
         string levelName,
-        [Description("Wall height in millimeters. Defaults to 2700 mm.")]
-        double heightMm = 2700,
+        [Description("Wall height in decimal feet. Defaults to 10 ft.")]
+        double height = 10.0,
         [Description("Wall type name (e.g. 'Generic - 200mm'). If omitted, uses the first available wall type.")]
         string? wallTypeName = null,
         [Description("Whether this is a structural wall.")]
@@ -43,7 +43,7 @@ public sealed class CreationTools
     {
         var payload = JsonSerializer.SerializeToElement(new
         {
-            startX, startY, endX, endY, levelName, heightMm, wallTypeName, isStructural
+            startX, startY, endX, endY, levelName, height, wallTypeName, isStructural
         });
 
         var request = new BridgeRequest(
@@ -63,16 +63,16 @@ public sealed class CreationTools
     /// </summary>
     [McpServerTool(Name = "create_text_note"), Description(
         "Create a text note annotation in a Revit view. " +
-        "Requires a view ID, position coordinates in millimeters, and the text content. " +
+        "Requires a view ID, position coordinates in decimal feet, and the text content. " +
         "Optionally specify a text note type. " +
         "Returns the new text note's Id, view name, text content, and type name.")]
     public static async Task<string> CreateTextNote(
         RevitBridgeClient bridgeClient,
         [Description("Element ID of the view to place the text note in.")]
         long viewId,
-        [Description("X coordinate in millimeters for the text note position.")]
+        [Description("X coordinate in decimal feet for the text note position.")]
         double x,
-        [Description("Y coordinate in millimeters for the text note position.")]
+        [Description("Y coordinate in decimal feet for the text note position.")]
         double y,
         [Description("The text content for the note.")]
         string text,
@@ -99,14 +99,14 @@ public sealed class CreationTools
     /// </summary>
     [McpServerTool(Name = "create_railing"), Description(
         "Create a railing along a path of connected straight line segments. " +
-        "Provide arrays of X and Y coordinates in millimeters for the path vertices (minimum 2 points). " +
+        "Provide arrays of X and Y coordinates in decimal feet for the path vertices (minimum 2 points). " +
         "Requires a level name. Optionally specify a railing type name. " +
         "Returns the new railing's Id, type name, level, and segment count.")]
     public static async Task<string> CreateRailing(
         RevitBridgeClient bridgeClient,
-        [Description("Array of X coordinates in millimeters defining railing path vertices. Must have at least 2 values. Paired with pointsY.")]
+        [Description("Array of X coordinates in decimal feet defining railing path vertices. Must have at least 2 values. Paired with pointsY.")]
         double[] pointsX,
-        [Description("Array of Y coordinates in millimeters defining railing path vertices. Must have same length as pointsX.")]
+        [Description("Array of Y coordinates in decimal feet defining railing path vertices. Must have same length as pointsX.")]
         double[] pointsY,
         [Description("Name of the level for the railing (e.g. 'Level 1').")]
         string levelName,
@@ -167,15 +167,15 @@ public sealed class CreationTools
     /// </summary>
     [McpServerTool(Name = "create_floor"), Description(
         "Create a floor from a closed boundary polygon. " +
-        "Provide arrays of X and Y coordinates in millimeters for the boundary vertices (minimum 3 points). " +
+        "Provide arrays of X and Y coordinates in decimal feet for the boundary vertices (minimum 3 points). " +
         "The boundary is automatically closed (last point connects to first). " +
         "Requires a level name. Optionally specify a floor type name. " +
         "Returns the new floor's Id, type name, level, and area.")]
     public static async Task<string> CreateFloor(
         RevitBridgeClient bridgeClient,
-        [Description("Array of X coordinates in millimeters defining floor boundary vertices. Must have at least 3 values. The boundary is automatically closed. Paired with pointsY.")]
+        [Description("Array of X coordinates in decimal feet defining floor boundary vertices. Must have at least 3 values. The boundary is automatically closed. Paired with pointsY.")]
         double[] pointsX,
-        [Description("Array of Y coordinates in millimeters defining floor boundary vertices. Must have same length as pointsX.")]
+        [Description("Array of Y coordinates in decimal feet defining floor boundary vertices. Must have same length as pointsX.")]
         double[] pointsY,
         [Description("Name of the level for the floor (e.g. 'Level 1').")]
         string levelName,

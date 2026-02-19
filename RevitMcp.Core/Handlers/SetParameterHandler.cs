@@ -136,8 +136,7 @@ public sealed class SetParameterHandler : ICommandHandler
                 if (!double.TryParse(value, out var doubleVal))
                     return (false, $"Cannot parse '{value}' as a number for parameter '{param.Definition.Name}'.");
 
-                var internalVal = ConvertToInternal(doc, param, doubleVal);
-                param.Set(internalVal);
+                param.Set(doubleVal);
                 return (true, null);
 
             case StorageType.ElementId:
@@ -150,22 +149,6 @@ public sealed class SetParameterHandler : ICommandHandler
             default:
                 return (false, $"Unsupported StorageType: {param.StorageType}");
         }
-    }
-
-    /// <summary>
-    /// Converts a value from the document's display units to Revit internal units.
-    /// For dimensionless parameters the value is returned as-is.
-    /// </summary>
-    private static double ConvertToInternal(Document doc, Parameter param, double value)
-    {
-        var specTypeId = param.Definition.GetDataType();
-
-        if (!UnitUtils.IsMeasurableSpec(specTypeId))
-            return value;
-
-        var formatOptions = doc.GetUnits().GetFormatOptions(specTypeId);
-        var displayUnitId = formatOptions.GetUnitTypeId();
-        return UnitUtils.ConvertToInternalUnits(value, displayUnitId);
     }
 
     /// <summary>

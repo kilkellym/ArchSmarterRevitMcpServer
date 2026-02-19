@@ -13,8 +13,8 @@ namespace RevitMcp.Core.Handlers;
 /// <remarks>
 /// Expected payload properties:
 /// <list type="bullet">
-///   <item><c>pointsX</c> (double[], required) – X coordinates in millimeters (min 3).</item>
-///   <item><c>pointsY</c> (double[], required) – Y coordinates in millimeters (same length as pointsX).</item>
+///   <item><c>pointsX</c> (double[], required) – X coordinates in decimal feet (min 3).</item>
+///   <item><c>pointsY</c> (double[], required) – Y coordinates in decimal feet (same length as pointsX).</item>
 ///   <item><c>levelName</c> (string, required) – The level name.</item>
 ///   <item><c>floorTypeName</c> (string, optional) – Floor type name.</item>
 ///   <item><c>isStructural</c> (bool, optional) – Whether the floor is structural.</item>
@@ -58,13 +58,11 @@ public sealed class CreateFloorHandler : ICommandHandler
             var isStructural = request.Payload?.TryGetProperty("isStructural", out var strProp) == true
                 && strProp.GetBoolean();
 
-            // --- Convert mm to feet ---
-            var pointsFt = new List<XYZ>();
+            // --- Build points ---
+            var points = new List<XYZ>();
             for (var i = 0; i < xCoords.Count; i++)
             {
-                var xFt = UnitUtils.ConvertToInternalUnits(xCoords[i], UnitTypeId.Millimeters);
-                var yFt = UnitUtils.ConvertToInternalUnits(yCoords[i], UnitTypeId.Millimeters);
-                pointsFt.Add(new XYZ(xFt, yFt, 0));
+                points.Add(new XYZ(xCoords[i], yCoords[i], 0));
             }
 
             // --- Find level ---
@@ -107,10 +105,10 @@ public sealed class CreateFloorHandler : ICommandHandler
 
             // --- Build the CurveLoop ---
             var curveLoop = new CurveLoop();
-            for (var i = 0; i < pointsFt.Count; i++)
+            for (var i = 0; i < points.Count; i++)
             {
-                var start = pointsFt[i];
-                var end = pointsFt[(i + 1) % pointsFt.Count];
+                var start = points[i];
+                var end = points[(i + 1) % points.Count];
 
                 if (start.DistanceTo(end) < 0.001)
                     continue; // skip degenerate segments
@@ -138,14 +136,12 @@ public sealed class CreateFloorHandler : ICommandHandler
                 // Read area after commit
                 var areaParam = floor.get_Parameter(BuiltInParameter.HOST_AREA_COMPUTED);
                 var areaSqFt = areaParam?.AsDouble() ?? 0;
-                var areaSqM = UnitUtils.ConvertFromInternalUnits(areaSqFt, UnitTypeId.SquareMeters);
-
                 var result = new
                 {
                     Id = floor.Id.Value,
                     FloorType = floorType.Name,
                     LevelName = level.Name,
-                    AreaSqM = Math.Round(areaSqM, 2),
+                    AreaSqFt = Math.Round(areaSqFt, 2),
                     PointCount = xCoords.Count
                 };
 

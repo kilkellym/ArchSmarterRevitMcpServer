@@ -33,24 +33,19 @@ public sealed class CreateSectionViewHandler : ICommandHandler
             if (request.Payload?.TryGetProperty("directionY", out var dyProp) != true)
                 return new BridgeResponse(Success: false, Error: "Missing required parameter: directionY");
 
-            var widthMm = request.Payload?.TryGetProperty("width", out var wProp) == true ? wProp.GetDouble() : 10000.0;
-            var heightMm = request.Payload?.TryGetProperty("height", out var hProp) == true ? hProp.GetDouble() : 10000.0;
-            var depthMm = request.Payload?.TryGetProperty("depth", out var dpProp) == true ? dpProp.GetDouble() : 10000.0;
+            var width = request.Payload?.TryGetProperty("width", out var wProp) == true ? wProp.GetDouble() : 30.0;
+            var height = request.Payload?.TryGetProperty("height", out var hProp) == true ? hProp.GetDouble() : 30.0;
+            var depth = request.Payload?.TryGetProperty("depth", out var dpProp) == true ? dpProp.GetDouble() : 30.0;
             var viewName = request.Payload?.TryGetProperty("viewName", out var nameProp) == true ? nameProp.GetString() : null;
 
-            // Convert mm to feet
-            var origin = new XYZ(
-                UnitUtils.ConvertToInternalUnits(oxProp.GetDouble(), UnitTypeId.Millimeters),
-                UnitUtils.ConvertToInternalUnits(oyProp.GetDouble(), UnitTypeId.Millimeters),
-                UnitUtils.ConvertToInternalUnits(ozProp.GetDouble(), UnitTypeId.Millimeters));
+            var origin = new XYZ(oxProp.GetDouble(), oyProp.GetDouble(), ozProp.GetDouble());
 
             var viewDir = new XYZ(dxProp.GetDouble(), dyProp.GetDouble(), 0).Normalize();
             if (viewDir.IsZeroLength())
                 return new BridgeResponse(Success: false, Error: "View direction cannot be zero.");
 
-            var halfW = UnitUtils.ConvertToInternalUnits(widthMm / 2, UnitTypeId.Millimeters);
-            var halfH = UnitUtils.ConvertToInternalUnits(heightMm / 2, UnitTypeId.Millimeters);
-            var depth = UnitUtils.ConvertToInternalUnits(depthMm, UnitTypeId.Millimeters);
+            var halfW = width / 2.0;
+            var halfH = height / 2.0;
 
             // Find section ViewFamilyType
             using var vftCollector = new FilteredElementCollector(doc);

@@ -59,7 +59,7 @@ public sealed class GetCurrentViewInfoHandler : ICommandHandler
         return new
         {
             Name = level.Name,
-            Elevation = UnitUtils.ConvertFromInternalUnits(level.Elevation, UnitTypeId.Millimeters)
+            Elevation = level.Elevation
         };
     }
 

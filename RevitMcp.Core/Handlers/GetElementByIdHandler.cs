@@ -81,7 +81,7 @@ public sealed class GetElementByIdHandler : ICommandHandler
     }
 
     /// <summary>
-    /// Gets the bounding box min/max coordinates converted from feet to millimeters.
+    /// Gets the bounding box min/max coordinates in decimal feet.
     /// </summary>
     private static object? GetBoundingBox(Element element)
     {
@@ -91,26 +91,26 @@ public sealed class GetElementByIdHandler : ICommandHandler
 
         return new
         {
-            Min = ConvertToMm(bb.Min),
-            Max = ConvertToMm(bb.Max)
+            Min = ToPoint(bb.Min),
+            Max = ToPoint(bb.Max)
         };
     }
 
     /// <summary>
-    /// Converts an XYZ point from Revit internal units (feet) to millimeters.
+    /// Extracts XYZ coordinates as decimal feet.
     /// </summary>
-    private static object ConvertToMm(XYZ point)
+    private static object ToPoint(XYZ point)
     {
         return new
         {
-            X = UnitUtils.ConvertFromInternalUnits(point.X, UnitTypeId.Millimeters),
-            Y = UnitUtils.ConvertFromInternalUnits(point.Y, UnitTypeId.Millimeters),
-            Z = UnitUtils.ConvertFromInternalUnits(point.Z, UnitTypeId.Millimeters)
+            point.X,
+            point.Y,
+            point.Z
         };
     }
 
     /// <summary>
-    /// Gets the location as a point or curve endpoints, converted to millimeters.
+    /// Gets the location as a point or curve endpoints in decimal feet.
     /// </summary>
     private static object? GetLocation(Element element)
     {
@@ -119,13 +119,13 @@ public sealed class GetElementByIdHandler : ICommandHandler
             LocationPoint lp => new
             {
                 Type = "Point",
-                Position = ConvertToMm(lp.Point)
+                Position = ToPoint(lp.Point)
             },
             LocationCurve lc => new
             {
                 Type = "Curve",
-                Start = ConvertToMm(lc.Curve.GetEndPoint(0)),
-                End = ConvertToMm(lc.Curve.GetEndPoint(1))
+                Start = ToPoint(lc.Curve.GetEndPoint(0)),
+                End = ToPoint(lc.Curve.GetEndPoint(1))
             },
             _ => null
         };

@@ -13,12 +13,12 @@ namespace RevitMcp.Core.Handlers;
 /// <remarks>
 /// Expected payload properties:
 /// <list type="bullet">
-///   <item><c>startX</c> (double, required) – X coordinate of wall start in millimeters.</item>
-///   <item><c>startY</c> (double, required) – Y coordinate of wall start in millimeters.</item>
-///   <item><c>endX</c> (double, required) – X coordinate of wall end in millimeters.</item>
-///   <item><c>endY</c> (double, required) – Y coordinate of wall end in millimeters.</item>
+///   <item><c>startX</c> (double, required) – X coordinate of wall start in decimal feet.</item>
+///   <item><c>startY</c> (double, required) – Y coordinate of wall start in decimal feet.</item>
+///   <item><c>endX</c> (double, required) – X coordinate of wall end in decimal feet.</item>
+///   <item><c>endY</c> (double, required) – Y coordinate of wall end in decimal feet.</item>
 ///   <item><c>levelName</c> (string, required) – The level name.</item>
-///   <item><c>heightMm</c> (double, optional) – Wall height in millimeters. Defaults to 2700.</item>
+///   <item><c>height</c> (double, optional) – Wall height in decimal feet. Defaults to 10.</item>
 ///   <item><c>wallTypeName</c> (string, optional) – Wall type name.</item>
 ///   <item><c>isStructural</c> (bool, optional) – Whether the wall is structural.</item>
 /// </list>
@@ -47,32 +47,25 @@ public sealed class CreateWallHandler : ICommandHandler
             if (request.Payload?.TryGetProperty("levelName", out var levelProp) != true)
                 return new BridgeResponse(Success: false, Error: "Missing required parameter: levelName");
 
-            var startXMm = sxProp.GetDouble();
-            var startYMm = syProp.GetDouble();
-            var endXMm = exProp.GetDouble();
-            var endYMm = eyProp.GetDouble();
+            var startX = sxProp.GetDouble();
+            var startY = syProp.GetDouble();
+            var endX = exProp.GetDouble();
+            var endY = eyProp.GetDouble();
             var levelName = levelProp.GetString();
 
             if (string.IsNullOrEmpty(levelName))
                 return new BridgeResponse(Success: false, Error: "levelName cannot be empty.");
 
-            var heightMm = request.Payload?.TryGetProperty("heightMm", out var htProp) == true
-                ? htProp.GetDouble() : 2700.0;
+            var height = request.Payload?.TryGetProperty("height", out var htProp) == true
+                ? htProp.GetDouble() : 10.0;
             var wallTypeName = request.Payload?.TryGetProperty("wallTypeName", out var wtProp) == true
                 ? wtProp.GetString() : null;
             var isStructural = request.Payload?.TryGetProperty("isStructural", out var strProp) == true
                 && strProp.GetBoolean();
 
-            // --- Convert mm to feet ---
-            var startXFt = UnitUtils.ConvertToInternalUnits(startXMm, UnitTypeId.Millimeters);
-            var startYFt = UnitUtils.ConvertToInternalUnits(startYMm, UnitTypeId.Millimeters);
-            var endXFt = UnitUtils.ConvertToInternalUnits(endXMm, UnitTypeId.Millimeters);
-            var endYFt = UnitUtils.ConvertToInternalUnits(endYMm, UnitTypeId.Millimeters);
-            var heightFt = UnitUtils.ConvertToInternalUnits(heightMm, UnitTypeId.Millimeters);
-
             // --- Validate wall has non-zero length ---
-            var startPt = new XYZ(startXFt, startYFt, 0);
-            var endPt = new XYZ(endXFt, endYFt, 0);
+            var startPt = new XYZ(startX, startY, 0);
+            var endPt = new XYZ(endX, endY, 0);
 
             if (startPt.DistanceTo(endPt) < 0.001)
                 return new BridgeResponse(Success: false,
@@ -124,19 +117,17 @@ public sealed class CreateWallHandler : ICommandHandler
 
             try
             {
-                var wall = Wall.Create(doc, line, wallType.Id, level.Id, heightFt, 0.0, false, isStructural);
+                var wall = Wall.Create(doc, line, wallType.Id, level.Id, height, 0.0, false, isStructural);
 
                 transaction.Commit();
-
-                var lengthMm = UnitUtils.ConvertFromInternalUnits(line.Length, UnitTypeId.Millimeters);
 
                 var result = new
                 {
                     Id = wall.Id.Value,
                     WallType = wallType.Name,
                     LevelName = level.Name,
-                    LengthMm = Math.Round(lengthMm, 1),
-                    HeightMm = heightMm
+                    LengthFt = Math.Round(line.Length, 4),
+                    HeightFt = height
                 };
 
                 var data = JsonSerializer.SerializeToElement(result);

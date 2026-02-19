@@ -14,8 +14,8 @@ namespace RevitMcp.Core.Handlers;
 /// <remarks>
 /// Expected payload properties:
 /// <list type="bullet">
-///   <item><c>pointsX</c> (double[], required) – X coordinates in millimeters (min 2).</item>
-///   <item><c>pointsY</c> (double[], required) – Y coordinates in millimeters (same length as pointsX).</item>
+///   <item><c>pointsX</c> (double[], required) – X coordinates in decimal feet (min 2).</item>
+///   <item><c>pointsY</c> (double[], required) – Y coordinates in decimal feet (same length as pointsX).</item>
 ///   <item><c>levelName</c> (string, required) – The level name.</item>
 ///   <item><c>railingTypeName</c> (string, optional) – Railing type name.</item>
 /// </list>
@@ -56,13 +56,11 @@ public sealed class CreateRailingHandler : ICommandHandler
             var railingTypeName = request.Payload?.TryGetProperty("railingTypeName", out var rtProp) == true
                 ? rtProp.GetString() : null;
 
-            // --- Convert mm to feet ---
-            var pointsFt = new List<XYZ>();
+            // --- Build points ---
+            var points = new List<XYZ>();
             for (var i = 0; i < xCoords.Count; i++)
             {
-                var xFt = UnitUtils.ConvertToInternalUnits(xCoords[i], UnitTypeId.Millimeters);
-                var yFt = UnitUtils.ConvertToInternalUnits(yCoords[i], UnitTypeId.Millimeters);
-                pointsFt.Add(new XYZ(xFt, yFt, 0));
+                points.Add(new XYZ(xCoords[i], yCoords[i], 0));
             }
 
             // --- Find level ---
@@ -105,10 +103,10 @@ public sealed class CreateRailingHandler : ICommandHandler
 
             // --- Build curve list from consecutive points ---
             var curves = new List<Curve>();
-            for (var i = 0; i < pointsFt.Count - 1; i++)
+            for (var i = 0; i < points.Count - 1; i++)
             {
-                var start = pointsFt[i];
-                var end = pointsFt[i + 1];
+                var start = points[i];
+                var end = points[i + 1];
 
                 if (start.DistanceTo(end) < 0.001)
                     continue; // skip degenerate segments
