@@ -25,8 +25,8 @@
                 buttonInternalName,
                 buttonTitle,
                 MethodBase.GetCurrentMethod().DeclaringType?.FullName,
-                Properties.Resources.Blue_32,
-                Properties.Resources.Blue_16,
+                RevitMCP.Addin.PDFExport.Properties.Resources.Blue_32,
+                RevitMCP.Addin.PDFExport.Properties.Resources.Blue_16,
                 "This is a tooltip for Button 2");
 
             return myButtonData.Data;
