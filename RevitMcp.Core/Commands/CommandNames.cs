@@ -99,6 +99,9 @@ public static class CommandNames
     /// <summary>Creates a floor from a closed boundary polygon.</summary>
     public const string CreateFloor = "create_floor";
 
+    /// <summary>Sends a C# script to the Launchpad scripting environment inside Revit.</summary>
+    public const string PushScript = "push_script";
+  
     /// <summary>Gets all views placed on a sheet with viewport bounds.</summary>
     public const string GetViewsOnSheet = "get_views_on_sheet";
 
