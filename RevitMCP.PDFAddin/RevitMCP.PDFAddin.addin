@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Command">
+    <Text>Export for Markup</Text>
+    <Description>Export the active sheet as a PDF with a sidecar JSON file for the markup editor.</Description>
+    <Assembly>RevitMCP.PDFAddin\RevitMCP.PDFAddin.dll</Assembly>
+    <FullClassName>RevitMCP.PDFAddin.ExportForMarkupCommand</FullClassName>
+    <ClientId>04f35b5b-c7b8-4179-94eb-af270cf8e7ef</ClientId>
+    <VendorId>com.archsmarter</VendorId>
+    <VendorDescription>ArchSmarter</VendorDescription>
+  </AddIn>
+  <AddIn Type="Application">
+    <Name>RevitMCP.PDFAddin</Name>
+    <Assembly>RevitMCP.PDFAddin\RevitMCP.PDFAddin.dll</Assembly>
+    <FullClassName>RevitMCP.PDFAddin.App</FullClassName>
+    <ClientId>427e26eb-401e-49a3-ad0e-03133b00d2dd</ClientId>
+    <VendorId>com.archsmarter</VendorId>
+    <VendorDescription>ArchSmarter</VendorDescription>
+  </AddIn>
+</RevitAddIns>

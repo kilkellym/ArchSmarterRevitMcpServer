@@ -69,6 +69,11 @@ internal class App : IExternalApplication
             new GetElementsInViewHandler(),
             new FindElementsByParameterHandler(),
             new BatchSetParametersHandler()
+            new GetViewsOnSheetHandler(),
+            new GetElementsInViewHandler(),
+            new MoveElementsHandler(),
+            new FindElementsByNameHandler(),
+            new GetSheetViewMappingHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
