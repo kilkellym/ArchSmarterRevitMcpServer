@@ -86,6 +86,11 @@
 	  <PackageReference Include="System.Drawing.Common" Version="8.0.3" IncludeAssets="build; compile" PrivateAssets="All" />
 	  <PackageReference Include="Revit_All_Main_Versions_API_x64" Version="$(RevitVersion).*" IncludeAssets="build; compile" PrivateAssets="All" />
 	</ItemGroup>
+
+	<!-- System.Text.Json is included in .NET 8 but needed as a package for net48 targets -->
+	<ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+	  <PackageReference Include="System.Text.Json" Version="8.0.5" />
+	</ItemGroup>
 	
 	<PropertyGroup>
 		<PostBuildEvent>
