@@ -78,4 +78,63 @@ public sealed class SheetTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Gets all views placed on a Revit sheet with viewport bounds.
+    /// </summary>
+    [McpServerTool(Name = "get_views_on_sheet"), Description(
+        "Get all views placed on a Revit sheet. Provide either a sheet number (e.g. 'E-101') " +
+        "or a sheet element ID. Returns each viewport's view ID, view name, view type, view scale, " +
+        "and the viewport's bounding box on the sheet in decimal feet. Use this to determine which " +
+        "view a PDF markup targets based on its position on the sheet.")]
+    public static async Task<string> GetViewsOnSheet(
+        RevitBridgeClient bridgeClient,
+        [Description("Sheet number (e.g. 'E-101', 'A-201'). Use this or sheetId.")]
+        string? sheetNumber = null,
+        [Description("Element ID of the sheet. Use this or sheetNumber.")]
+        long? sheetId = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { sheetNumber, sheetId });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetViewsOnSheet,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
+    /// Gets a complete mapping of all sheets to their views.
+    /// </summary>
+    [McpServerTool(Name = "get_sheet_view_mapping"), Description(
+        "Get a complete mapping of all sheets in the project to the views placed on them. " +
+        "For each sheet, returns the sheet number, sheet name, and all viewports with their view names, " +
+        "view types, and bounding box positions on the sheet. Use this to build a lookup table that maps " +
+        "PDF pages (by sheet number) to their Revit views. This is designed for batch export alongside " +
+        "PDF generation to create the metadata sidecar file.")]
+    public static async Task<string> GetSheetViewMapping(
+        RevitBridgeClient bridgeClient,
+        [Description("Optional array of sheet numbers to include. If omitted, returns all sheets.")]
+        string[]? sheetsFilter = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { sheetsFilter });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetSheetViewMapping,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }

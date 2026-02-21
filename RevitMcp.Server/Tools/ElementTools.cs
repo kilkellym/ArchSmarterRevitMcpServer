@@ -205,4 +205,116 @@ public sealed class ElementTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Gets elements visible in a specific Revit view, optionally filtered by category and region.
+    /// </summary>
+    [McpServerTool(Name = "get_elements_in_view"), Description(
+        "Get elements visible in a specific Revit view, optionally filtered by category and a rectangular region. " +
+        "Uses a view-scoped FilteredElementCollector so only elements visible in the view are returned. " +
+        "Optionally provide min/max coordinates in the view's coordinate system to limit results to a region. " +
+        "Returns element ID, name, category, type name, and bounding box center for each element. " +
+        "Use this to identify which elements a PDF markup is targeting based on its position in a view.")]
+    public static async Task<string> GetElementsInView(
+        RevitBridgeClient bridgeClient,
+        [Description("Element ID of the view to query elements in.")]
+        long viewId,
+        [Description("Built-in category name to filter by (e.g. 'Walls', 'Conduits', 'ElectricalEquipment'). Omit to return all categories.")]
+        string? category = null,
+        [Description("Minimum X coordinate in decimal feet to define a search region. Must be paired with maxX, minY, maxY.")]
+        double? minX = null,
+        [Description("Minimum Y coordinate in decimal feet for the search region.")]
+        double? minY = null,
+        [Description("Maximum X coordinate in decimal feet for the search region.")]
+        double? maxX = null,
+        [Description("Maximum Y coordinate in decimal feet for the search region.")]
+        double? maxY = null,
+        [Description("Maximum number of elements to return. Defaults to 100.")]
+        int limit = 100,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { viewId, category, minX, minY, maxX, maxY, limit });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetElementsInView,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
+    /// Moves one or more Revit elements by a translation vector.
+    /// </summary>
+    [McpServerTool(Name = "move_elements"), Description(
+        "Move one or more Revit elements by a translation vector in decimal feet. " +
+        "Supports preview mode (confirm=false) that shows the current and proposed positions " +
+        "without moving anything. Set confirm=true to execute the move. " +
+        "Use this for dimension corrections where an element needs to shift to a new position. " +
+        "Returns the element's old and new locations. Maximum 50 elements per call.")]
+    public static async Task<string> MoveElements(
+        RevitBridgeClient bridgeClient,
+        [Description("Array of element IDs to move.")]
+        long[] elementIds,
+        [Description("Translation distance along X axis in decimal feet.")]
+        double deltaX,
+        [Description("Translation distance along Y axis in decimal feet.")]
+        double deltaY,
+        [Description("Translation distance along Z axis in decimal feet. Defaults to 0.")]
+        double deltaZ = 0.0,
+        [Description("Set to true to execute the move. When false (default), runs in preview mode showing current and proposed positions.")]
+        bool confirm = false,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { elementIds, deltaX, deltaY, deltaZ, confirm });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.MoveElements,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
+    /// Searches for Revit elements by name, family name, type name, or mark value.
+    /// </summary>
+    [McpServerTool(Name = "find_elements_by_name"), Description(
+        "Search for Revit elements by name, family name, type name, or mark value. " +
+        "Supports partial matching and optional view scoping. " +
+        "Returns element ID, name, category, type name, mark, and location for each match. " +
+        "Use this when a PDF markup references an element by its designation or label rather than by position.")]
+    public static async Task<string> FindElementsByName(
+        RevitBridgeClient bridgeClient,
+        [Description("Text to search for. Matches against element name, family name, type name, and the 'Mark' parameter. Case insensitive, supports partial matches.")]
+        string searchText,
+        [Description("Optional view ID to scope the search to elements visible in a specific view.")]
+        long? viewId = null,
+        [Description("Optional category filter (e.g. 'ElectricalEquipment', 'Walls').")]
+        string? category = null,
+        [Description("Maximum number of elements to return. Defaults to 50.")]
+        int limit = 50,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { searchText, viewId, category, limit });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.FindElementsByName,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }
