@@ -99,6 +99,20 @@ public static class CommandNames
     /// <summary>Creates a floor from a closed boundary polygon.</summary>
     public const string CreateFloor = "create_floor";
 
+    /// <summary>Creates a detail line annotation in a view.</summary>
+    public const string CreateDetailLine = "create_detail_line";
+
+    /// <summary>Gets all views placed on a sheet.</summary>
+    public const string GetSheetViews = "get_sheet_views";
+
+    /// <summary>Gets elements visible in a specific view.</summary>
+    public const string GetElementsInView = "get_elements_in_view";
+
+    /// <summary>Finds elements by matching a parameter value.</summary>
+    public const string FindElementsByParameter = "find_elements_by_parameter";
+
+    /// <summary>Sets parameter values on multiple elements in a single transaction.</summary>
+    public const string BatchSetParameters = "batch_set_parameters";
     /// <summary>Sends a C# script to the Launchpad scripting environment inside Revit.</summary>
     public const string PushScript = "push_script";
   

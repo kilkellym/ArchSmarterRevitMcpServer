@@ -201,4 +201,45 @@ public sealed class CreationTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Creates a detail line annotation in a view.
+    /// </summary>
+    [McpServerTool(Name = "create_detail_line"), Description(
+        "Create a detail line (annotation) in a Revit view between two points. " +
+        "Requires a view ID and start/end coordinates in decimal feet. " +
+        "Optionally specify a line style name. " +
+        "Returns the new detail line's Id, view name, start/end coordinates, length, and line style.")]
+    public static async Task<string> CreateDetailLine(
+        RevitBridgeClient bridgeClient,
+        [Description("Element ID of the view to draw the detail line in.")]
+        long viewId,
+        [Description("X coordinate of the start point in decimal feet.")]
+        double startX,
+        [Description("Y coordinate of the start point in decimal feet.")]
+        double startY,
+        [Description("X coordinate of the end point in decimal feet.")]
+        double endX,
+        [Description("Y coordinate of the end point in decimal feet.")]
+        double endY,
+        [Description("Optional line style name (e.g. 'Thin Lines', 'Medium Lines'). If omitted, uses the default style.")]
+        string? lineStyleName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new
+        {
+            viewId, startX, startY, endX, endY, lineStyleName
+        });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.CreateDetailLine,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }

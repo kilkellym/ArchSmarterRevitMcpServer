@@ -8,12 +8,16 @@ namespace RevitMcp.Core.Handlers;
 
 /// <summary>
 /// Handles the <see cref="CommandNames.GetElementsInView"/> command.
+/// Returns elements visible in a specific view using a view-scoped FilteredElementCollector.
 /// Retrieves elements visible in a specific view, optionally filtered by category
 /// and a rectangular bounding region.
 /// </summary>
 /// <remarks>
 /// Expected payload properties:
 /// <list type="bullet">
+///   <item><c>viewId</c> (long, required) – The view to query elements from.</item>
+///   <item><c>category</c> (string, optional) – Built-in category name to filter by.</item>
+///   <item><c>limit</c> (int, optional) – Maximum results. Defaults to 200.</item>
 ///   <item><c>viewId</c> (long, required) – Element ID of the view to query.</item>
 ///   <item><c>category</c> (string, optional) – Built-in category name to filter by.</item>
 ///   <item><c>minX</c> (double, optional) – Minimum X coordinate for the search region.</item>
@@ -25,6 +29,9 @@ namespace RevitMcp.Core.Handlers;
 /// </remarks>
 public sealed class GetElementsInViewHandler : ICommandHandler
 {
+    private const int DefaultLimit = 200;
+    private const int MaxLimit = 2000;
+
     /// <inheritdoc />
     public string Command => CommandNames.GetElementsInView;
 
@@ -133,6 +140,9 @@ public sealed class GetElementsInViewHandler : ICommandHandler
             {
                 ViewId = view.Id.Value,
                 ViewName = view.Name,
+                ViewType = view.ViewType.ToString(),
+                ElementCount = elements.Count,
+                Truncated = elements.Count >= limit,
                 ElementCount = elements.Count,
                 Elements = elements
             };
@@ -144,15 +154,5 @@ public sealed class GetElementsInViewHandler : ICommandHandler
         {
             return new BridgeResponse(Success: false, Error: ex.Message);
         }
-    }
-
-    /// <summary>
-    /// Safely reads <see cref="Element.Name"/>. Some element types throw when
-    /// the Name property is accessed.
-    /// </summary>
-    private static string? SafeGetName(Element element)
-    {
-        try { return element.Name; }
-        catch { return null; }
     }
 }

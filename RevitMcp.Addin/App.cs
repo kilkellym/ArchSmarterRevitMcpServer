@@ -64,6 +64,11 @@ internal class App : IExternalApplication
             new InsertGroupHandler(),
             new CreateDimensionHandler(),
             new CreateFloorHandler(),
+            new CreateDetailLineHandler(),
+            new GetSheetViewsHandler(),
+            new GetElementsInViewHandler(),
+            new FindElementsByParameterHandler(),
+            new BatchSetParametersHandler()
             new GetViewsOnSheetHandler(),
             new GetElementsInViewHandler(),
             new MoveElementsHandler(),

@@ -80,6 +80,25 @@ public sealed class SheetTools
     }
 
     /// <summary>
+    /// Gets all views placed on a sheet.
+    /// </summary>
+    [McpServerTool(Name = "get_sheet_views"), Description(
+        "Get all views (viewports) placed on a sheet. " +
+        "Identify the sheet by either its element ID or sheet number. " +
+        "Returns the sheet info and a list of views with their viewport IDs, view IDs, " +
+        "names, types, scales, and center coordinates in decimal feet.")]
+    public static async Task<string> GetSheetViews(
+        RevitBridgeClient bridgeClient,
+        [Description("The Revit element ID of the sheet. Provide either sheetId or sheetNumber.")]
+        long? sheetId = null,
+        [Description("The sheet number (e.g. 'A101'). Provide either sheetId or sheetNumber.")]
+        string? sheetNumber = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new { sheetId, sheetNumber });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.GetSheetViews,
     /// Gets all views placed on a Revit sheet with viewport bounds.
     /// </summary>
     [McpServerTool(Name = "get_views_on_sheet"), Description(
