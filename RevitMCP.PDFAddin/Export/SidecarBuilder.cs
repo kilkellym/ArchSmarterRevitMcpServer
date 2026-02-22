@@ -134,17 +134,14 @@ namespace RevitMCP.PDFAddin.Export
             try
             {
                 vpData.CropBoxActive = view.CropBoxActive;
-                if (view.CropBoxActive)
+                BoundingBoxXYZ cropBox = view.CropBox;
+                vpData.ViewCropBounds = new Bounds2D
                 {
-                    BoundingBoxXYZ cropBox = view.CropBox;
-                    vpData.ViewCropBounds = new Bounds2D
-                    {
-                        MinX = Math.Round(cropBox.Min.X, 6),
-                        MinY = Math.Round(cropBox.Min.Y, 6),
-                        MaxX = Math.Round(cropBox.Max.X, 6),
-                        MaxY = Math.Round(cropBox.Max.Y, 6)
-                    };
-                }
+                    MinX = Math.Round(cropBox.Min.X, 6),
+                    MinY = Math.Round(cropBox.Min.Y, 6),
+                    MaxX = Math.Round(cropBox.Max.X, 6),
+                    MaxY = Math.Round(cropBox.Max.Y, 6)
+                };
             }
             catch (Exception)
             {

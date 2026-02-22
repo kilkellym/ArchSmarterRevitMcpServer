@@ -225,6 +225,7 @@ public sealed class ElementTools
         CancellationToken cancellationToken = default)
     {
         var payload = JsonSerializer.SerializeToElement(new { viewId, category, limit });
+    }
     /// Gets elements visible in a specific Revit view, optionally filtered by category and region.
     /// </summary>
     [McpServerTool(Name = "get_elements_in_view"), Description(
