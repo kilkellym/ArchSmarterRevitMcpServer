@@ -143,7 +143,6 @@ public sealed class GetElementsInViewHandler : ICommandHandler
                 ViewType = view.ViewType.ToString(),
                 ElementCount = elements.Count,
                 Truncated = elements.Count >= limit,
-                ElementCount = elements.Count,
                 Elements = elements
             };
 
@@ -153,6 +152,22 @@ public sealed class GetElementsInViewHandler : ICommandHandler
         catch (Exception ex)
         {
             return new BridgeResponse(Success: false, Error: ex.Message);
+        }
+    }
+
+    /// <summary>
+    /// Safely reads <see cref="Element.Name"/>. Some element types throw when
+    /// the Name property is accessed.
+    /// </summary>
+    private static string? SafeGetName(Element element)
+    {
+        try
+        {
+            return element.Name;
+        }
+        catch
+        {
+            return null;
         }
     }
 }
