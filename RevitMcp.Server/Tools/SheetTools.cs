@@ -99,6 +99,17 @@ public sealed class SheetTools
 
         var request = new BridgeRequest(
             Command: CommandNames.GetSheetViews,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
     /// Gets all views placed on a Revit sheet with viewport bounds.
     /// </summary>
     [McpServerTool(Name = "get_views_on_sheet"), Description(
