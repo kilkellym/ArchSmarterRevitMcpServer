@@ -124,7 +124,8 @@ public sealed class CreateRailingHandler : ICommandHandler
 
             try
             {
-                var railing = Railing.Create(doc, curves, railingType.Id, level.Id);
+                var curveLoop = CurveLoop.Create(curves);
+                var railing = Railing.Create(doc, curveLoop, railingType.Id, level.Id);
 
                 transaction.Commit();
 
