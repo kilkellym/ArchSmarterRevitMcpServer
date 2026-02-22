@@ -52,7 +52,7 @@ public sealed class CreateDetailLineHandler : ICommandHandler
             if (view is null)
                 return new BridgeResponse(Success: false, Error: $"View not found: {viewIdProp.GetInt64()}");
 
-            if (!view.AreDetailLinesAllowedInView())
+            if (!SupportsDetailLines(view))
                 return new BridgeResponse(Success: false,
                     Error: $"Detail lines are not allowed in view '{view.Name}' (ViewType: {view.ViewType}).");
 
@@ -107,6 +107,22 @@ public sealed class CreateDetailLineHandler : ICommandHandler
             return new BridgeResponse(Success: false, Error: ex.Message);
         }
     }
+
+    /// <summary>
+    /// Returns <c>true</c> if the given view supports detail lines.
+    /// </summary>
+    private static bool SupportsDetailLines(View view) => view.ViewType switch
+    {
+        ViewType.FloorPlan      => true,
+        ViewType.CeilingPlan    => true,
+        ViewType.EngineeringPlan => true,
+        ViewType.AreaPlan       => true,
+        ViewType.Section        => true,
+        ViewType.Elevation      => true,
+        ViewType.Detail         => true,
+        ViewType.DraftingView   => true,
+        _                       => false
+    };
 
     /// <summary>
     /// Searches the document's line style categories for a match by name.
