@@ -68,7 +68,7 @@ internal class App : IExternalApplication
             new GetSheetViewsHandler(),
             new GetElementsInViewHandler(),
             new FindElementsByParameterHandler(),
-            new BatchSetParametersHandler()
+            new BatchSetParametersHandler(),
             new GetViewsOnSheetHandler(),
             new GetElementsInViewHandler(),
             new MoveElementsHandler(),
