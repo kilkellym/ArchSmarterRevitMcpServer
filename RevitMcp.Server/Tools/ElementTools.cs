@@ -207,25 +207,6 @@ public sealed class ElementTools
     }
 
     /// <summary>
-    /// Gets elements visible in a specific view.
-    /// </summary>
-    [McpServerTool(Name = "get_elements_in_view"), Description(
-        "Get elements visible in a specific Revit view. " +
-        "Uses a view-scoped collector to return only elements that appear in the given view. " +
-        "Optionally filter by category. " +
-        "Returns element Id, Name, and Category for each element in the view.")]
-    public static async Task<string> GetElementsInView(
-        RevitBridgeClient bridgeClient,
-        [Description("The Revit element ID of the view to query.")]
-        long viewId,
-        [Description("Built-in category name to filter by (e.g. 'Walls', 'Doors'). Omit to return all categories.")]
-        string? category = null,
-        [Description("Maximum number of elements to return. Defaults to 200.")]
-        int limit = 200,
-        CancellationToken cancellationToken = default)
-    {
-        var payload = JsonSerializer.SerializeToElement(new { viewId, category, limit });
-    }
     /// Gets elements visible in a specific Revit view, optionally filtered by category and region.
     /// </summary>
     [McpServerTool(Name = "get_elements_in_view"), Description(
@@ -296,6 +277,17 @@ public sealed class ElementTools
 
         var request = new BridgeRequest(
             Command: CommandNames.FindElementsByParameter,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
     /// Moves one or more Revit elements by a translation vector.
     /// </summary>
     [McpServerTool(Name = "move_elements"), Description(
@@ -362,6 +354,17 @@ public sealed class ElementTools
 
         var request = new BridgeRequest(
             Command: CommandNames.BatchSetParameters,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
     /// Searches for Revit elements by name, family name, type name, or mark value.
     /// </summary>
     [McpServerTool(Name = "find_elements_by_name"), Description(
