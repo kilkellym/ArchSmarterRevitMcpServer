@@ -105,7 +105,7 @@ public static class CommandNames
     /// <summary>Gets all views placed on a sheet.</summary>
     public const string GetSheetViews = "get_sheet_views";
 
-    /// <summary>Gets elements visible in a specific view.</summary>
+    /// <summary>Gets elements visible in a specific view, optionally filtered by category and region.</summary>
     public const string GetElementsInView = "get_elements_in_view";
 
     /// <summary>Finds elements by matching a parameter value.</summary>
@@ -113,14 +113,12 @@ public static class CommandNames
 
     /// <summary>Sets parameter values on multiple elements in a single transaction.</summary>
     public const string BatchSetParameters = "batch_set_parameters";
+
     /// <summary>Sends a C# script to the Launchpad scripting environment inside Revit.</summary>
     public const string PushScript = "push_script";
-  
+
     /// <summary>Gets all views placed on a sheet with viewport bounds.</summary>
     public const string GetViewsOnSheet = "get_views_on_sheet";
-
-    /// <summary>Gets elements visible in a specific view, optionally filtered by category and region.</summary>
-    public const string GetElementsInView = "get_elements_in_view";
 
     /// <summary>Moves one or more elements by a translation vector.</summary>
     public const string MoveElements = "move_elements";
