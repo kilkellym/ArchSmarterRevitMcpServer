@@ -65,10 +65,11 @@ public sealed class GetElementsInViewHandler : ICommandHandler
                 : 100;
 
             // Parse optional bounding region
-            var hasMinX = request.Payload?.TryGetProperty("minX", out var minXProp) == true;
-            var hasMinY = request.Payload?.TryGetProperty("minY", out var minYProp) == true;
-            var hasMaxX = request.Payload?.TryGetProperty("maxX", out var maxXProp) == true;
-            var hasMaxY = request.Payload?.TryGetProperty("maxY", out var maxYProp) == true;
+            JsonElement minXProp = default, minYProp = default, maxXProp = default, maxYProp = default;
+            var hasMinX = request.Payload?.TryGetProperty("minX", out minXProp) == true;
+            var hasMinY = request.Payload?.TryGetProperty("minY", out minYProp) == true;
+            var hasMaxX = request.Payload?.TryGetProperty("maxX", out maxXProp) == true;
+            var hasMaxY = request.Payload?.TryGetProperty("maxY", out maxYProp) == true;
             var hasBounds = hasMinX && hasMinY && hasMaxX && hasMaxY;
 
             double minX = 0, minY = 0, maxX = 0, maxY = 0;
