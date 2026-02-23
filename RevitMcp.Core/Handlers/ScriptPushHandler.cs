@@ -14,6 +14,7 @@ public static class ScriptPushHandler
     /// </summary>
     private static readonly string OutputFolder = Path.Combine(
         Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+        "ArchSmarter",
         "Launchpad",
         "MCP");
 
