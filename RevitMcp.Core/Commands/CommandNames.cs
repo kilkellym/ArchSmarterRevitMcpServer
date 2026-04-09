@@ -128,4 +128,7 @@ public static class CommandNames
 
     /// <summary>Gets a complete mapping of all sheets to their views.</summary>
     public const string GetSheetViewMapping = "get_sheet_view_mapping";
+
+    /// <summary>Gets all warnings (failure messages) in the active Revit document.</summary>
+    public const string GetWarnings = "get_warnings";
 }

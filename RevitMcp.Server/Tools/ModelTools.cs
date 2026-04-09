@@ -55,4 +55,26 @@ public sealed class ModelTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Gets all warnings in the active Revit document.
+    /// </summary>
+    [McpServerTool(Name = "get_warnings"), Description(
+        "Get all warnings (failure messages) in the active Revit document. " +
+        "Returns each warning's severity, description text, failing element IDs, and additional element IDs. " +
+        "Also returns the total warning count. Use this to audit model health, identify issues, " +
+        "or find elements that need attention.")]
+    public static async Task<string> GetWarnings(
+        RevitBridgeClient bridgeClient,
+        CancellationToken cancellationToken = default)
+    {
+        var request = new BridgeRequest(Command: CommandNames.GetWarnings);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }
