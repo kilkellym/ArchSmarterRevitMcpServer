@@ -131,4 +131,19 @@ public static class CommandNames
 
     /// <summary>Gets all warnings (failure messages) in the active Revit document.</summary>
     public const string GetWarnings = "get_warnings";
+
+    /// <summary>Checks whether the active document is a family document (.rfa).</summary>
+    public const string IsFamilyDocument = "is_family_document";
+
+    /// <summary>Gets top-level information about the active family document.</summary>
+    public const string GetFamilyInfo = "get_family_info";
+
+    /// <summary>Lists all geometric and reference elements in the active family document.</summary>
+    public const string ListFamilyElements = "list_family_elements";
+
+    /// <summary>Gets all reference planes in the active family document with geometry.</summary>
+    public const string GetReferencePlanes = "get_reference_planes";
+
+    /// <summary>Gets all family parameters in the active family document.</summary>
+    public const string GetParameters = "get_parameters";
 }
