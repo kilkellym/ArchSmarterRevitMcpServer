@@ -74,6 +74,7 @@ internal class App : IExternalApplication
             new FindElementsByNameHandler(),
             new GetSheetViewMappingHandler(),
             new GetWarningsHandler(),
+            new DiagnosticHandler(),
             new IsFamilyDocumentHandler(),
             new GetFamilyInfoHandler(),
             new ListFamilyElementsHandler(),

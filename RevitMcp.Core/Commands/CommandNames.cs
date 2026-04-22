@@ -132,6 +132,9 @@ public static class CommandNames
     /// <summary>Gets all warnings (failure messages) in the active Revit document.</summary>
     public const string GetWarnings = "get_warnings";
 
+    /// <summary>Diagnostic tool that checks the full server-to-Revit connection stack.</summary>
+    public const string PingRevit = "ping_revit";
+
     /// <summary>Checks whether the active document is a family document (.rfa).</summary>
     public const string IsFamilyDocument = "is_family_document";
 

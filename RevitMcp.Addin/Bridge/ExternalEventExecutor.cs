@@ -35,32 +35,40 @@ internal sealed class ExternalEventExecutor : IExternalEventHandler
     public void Execute(UIApplication app)
     {
         var uiDoc = app.ActiveUIDocument;
-        if (uiDoc is null)
-        {
-            while (_channel.Reader.TryRead(out var dropped))
-            {
-                dropped.Completion.TrySetResult(
-                    new BridgeResponse(Success: false, Error: "No active Revit document."));
-            }
-            return;
-        }
 
         while (_channel.Reader.TryRead(out var pending))
         {
             try
             {
-                if (_registry.TryGetHandler(pending.Request.Command, out var handler) && handler is not null)
-                {
-                    var response = handler.Handle(pending.Request, uiDoc);
-                    pending.Completion.TrySetResult(response);
-                }
-                else
+                if (!_registry.TryGetHandler(pending.Request.Command, out var handler) || handler is null)
                 {
                     pending.Completion.TrySetResult(
                         new BridgeResponse(
                             Success: false,
                             Error: $"Unknown command: {pending.Request.Command}"));
+                    continue;
                 }
+
+                BridgeResponse response;
+                if (uiDoc is null)
+                {
+                    // No active document. Only handlers that opt in via
+                    // INoDocumentCommandHandler can run in this state.
+                    if (handler is INoDocumentCommandHandler noDocHandler)
+                    {
+                        response = noDocHandler.HandleWithoutDocument(pending.Request, app);
+                    }
+                    else
+                    {
+                        response = new BridgeResponse(Success: false, Error: "No active Revit document.");
+                    }
+                }
+                else
+                {
+                    response = handler.Handle(pending.Request, uiDoc);
+                }
+
+                pending.Completion.TrySetResult(response);
             }
             catch (Exception ex)
             {
