@@ -5,6 +5,7 @@
     <TargetFramework>net8.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Configurations>Debug;Release;Release R27;Release R26</Configurations>
   </PropertyGroup>
 
   <ItemGroup>

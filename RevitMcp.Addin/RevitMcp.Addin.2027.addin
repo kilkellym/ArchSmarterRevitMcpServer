@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>RevitMcp.Addin</Name>
+    <Assembly>RevitMcp.Addin\RevitMcp.Addin.dll</Assembly>
+    <FullClassName>RevitMcp.Addin.App</FullClassName>
+    <ClientId>8288e8a8-a191-407b-a4c7-8f280ecd77e5</ClientId>
+    <VendorId>ArchSmarter</VendorId>
+    <VendorDescription>ArchSmarter, www.archsmarter.com</VendorDescription>
+  </AddIn>
+</RevitAddIns>

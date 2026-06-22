@@ -102,6 +102,12 @@ public static class CommandNames
     /// <summary>Creates a detail line annotation in a view.</summary>
     public const string CreateDetailLine = "create_detail_line";
 
+    /// <summary>Creates a straight duct segment between two 3D points.</summary>
+    public const string CreateDuct = "create_duct";
+
+    /// <summary>Creates a duct fitting (elbow, tee, or transition) connecting existing ducts.</summary>
+    public const string CreateDuctFitting = "create_duct_fitting";
+
     /// <summary>Gets all views placed on a sheet.</summary>
     public const string GetSheetViews = "get_sheet_views";
 

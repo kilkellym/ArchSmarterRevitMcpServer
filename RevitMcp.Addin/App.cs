@@ -79,7 +79,9 @@ internal class App : IExternalApplication
             new GetFamilyInfoHandler(),
             new ListFamilyElementsHandler(),
             new GetReferencePlanesHandler(),
-            new GetParametersHandler()
+            new GetParametersHandler(),
+            new CreateDuctHandler(),
+            new CreateDuctFittingHandler()
         });
 
         // 2. Create the channel that bridges the pipe thread → Revit main thread.
@@ -119,7 +121,20 @@ internal class App : IExternalApplication
     /// </summary>
     private void CreateRibbonUI(UIControlledApplication app)
     {
-        var panel = GetOrCreatePanel(app, "Revit MCP");
+        // create ribbon
+        string tabName = "ArchSmarter";
+
+        try
+        {
+            app.CreateRibbonTab(tabName);
+        }
+        catch (Exception)
+        {
+            // tab already exists - do nothing
+        }
+
+        // create panel
+        var panel = GetOrCreatePanel(app, tabName, "Revit MCP");
         var assemblyPath = Assembly.GetExecutingAssembly().Location;
 
         // MCP Status button
@@ -178,7 +193,7 @@ internal class App : IExternalApplication
     /// <summary>
     /// Gets an existing ribbon panel by name, or creates a new one on the Add-Ins tab.
     /// </summary>
-    private static RibbonPanel GetOrCreatePanel(UIControlledApplication app, string panelName)
+    private static RibbonPanel GetOrCreatePanel(UIControlledApplication app, string tabName, string panelName)
     {
         foreach (var panel in app.GetRibbonPanels())
         {
@@ -186,7 +201,7 @@ internal class App : IExternalApplication
                 return panel;
         }
 
-        return app.CreateRibbonPanel("ArchSmarter", panelName);
+        return app.CreateRibbonPanel(tabName, panelName);
     }
 
     /// <summary>

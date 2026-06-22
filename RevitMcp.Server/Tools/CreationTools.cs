@@ -242,4 +242,97 @@ public sealed class CreationTools
 
         return response.Data?.GetRawText() ?? "No data returned.";
     }
+
+    /// <summary>
+    /// Creates a straight duct segment between two 3D points on a level.
+    /// </summary>
+    [McpServerTool(Name = "create_duct"), Description(
+        "Create a straight duct segment between two 3D points. " +
+        "Requires start and end coordinates in decimal feet and a level name. " +
+        "For rectangular ducts, specify width and height in inches. " +
+        "For round ducts, specify diameter in inches. " +
+        "If no size is specified, the duct type's default size is used. " +
+        "Returns the new duct's Id, type name, system type, level, length, and size.")]
+    public static async Task<string> CreateDuct(
+        RevitBridgeClient bridgeClient,
+        [Description("X coordinate of duct start point in decimal feet.")]
+        double startX,
+        [Description("Y coordinate of duct start point in decimal feet.")]
+        double startY,
+        [Description("Z coordinate of duct start point in decimal feet (elevation).")]
+        double startZ,
+        [Description("X coordinate of duct end point in decimal feet.")]
+        double endX,
+        [Description("Y coordinate of duct end point in decimal feet.")]
+        double endY,
+        [Description("Z coordinate of duct end point in decimal feet (elevation).")]
+        double endZ,
+        [Description("Name of the level (e.g. 'Level 1').")]
+        string levelName,
+        [Description("Duct width in inches for rectangular ducts. Must be paired with height.")]
+        double? width = null,
+        [Description("Duct height in inches for rectangular ducts. Must be paired with width.")]
+        double? height = null,
+        [Description("Duct diameter in inches for round ducts. Cannot be used with width/height.")]
+        double? diameter = null,
+        [Description("Duct type name. If omitted, uses the first available duct type.")]
+        string? ductTypeName = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new
+        {
+            startX, startY, startZ, endX, endY, endZ,
+            levelName, width, height, diameter, ductTypeName
+        });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.CreateDuct,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
+
+    /// <summary>
+    /// Creates a duct fitting (elbow, tee, or transition) connecting existing duct elements.
+    /// </summary>
+    [McpServerTool(Name = "create_duct_fitting"), Description(
+        "Create a duct fitting connecting existing duct elements. " +
+        "Supports elbow, tee, and transition fittings. " +
+        "Specify the fitting type and the element IDs of the ducts to connect. " +
+        "The nearest unconnected HVAC connectors are automatically matched. " +
+        "For tee fittings, provide three duct element IDs. " +
+        "Returns the fitting's Id, type, family name, and type name.")]
+    public static async Task<string> CreateDuctFitting(
+        RevitBridgeClient bridgeClient,
+        [Description("Type of fitting: 'elbow', 'tee', or 'transition'.")]
+        string fittingType,
+        [Description("Element ID of the first duct.")]
+        long elementId1,
+        [Description("Element ID of the second duct.")]
+        long elementId2,
+        [Description("Element ID of the third duct (required for tee fittings only).")]
+        long? elementId3 = null,
+        CancellationToken cancellationToken = default)
+    {
+        var payload = JsonSerializer.SerializeToElement(new
+        {
+            fittingType, elementId1, elementId2, elementId3
+        });
+
+        var request = new BridgeRequest(
+            Command: CommandNames.CreateDuctFitting,
+            Payload: payload);
+
+        var response = await bridgeClient.SendAsync(request, cancellationToken);
+
+        if (!response.Success)
+            return $"Error: {response.Error}";
+
+        return response.Data?.GetRawText() ?? "No data returned.";
+    }
 }
