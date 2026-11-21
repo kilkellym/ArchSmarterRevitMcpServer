@@ -21,7 +21,7 @@ public sealed class LaunchpadTools
         "Use this when no existing MCP tool can accomplish the user's request and custom " +
         "Revit API code is needed. Prefer built-in MCP tools when they can handle the task. " +
         "The script should use the Revit API and assume access to 'doc' (Document) and " +
-        "'uiDoc' (UIDocument) variables. Include all necessary using statements. " +
+        "'uidoc' (UIDocument) variables. Include all necessary using statements. " +
         "Use Console.WriteLine() to output results.")]
     public static string PushScript(
         [Description("The C# script code to send to Launchpad.")]
